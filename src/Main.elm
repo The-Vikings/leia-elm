@@ -1,56 +1,27 @@
-module Main exposing (..)
+module Main exposing (main)
 
-import Browser
-import Html exposing (Html, text, div, h1, img)
-import Html.Attributes exposing (src)
-
-
----- MODEL ----
-
-
-type alias Model =
-    {}
+import Messages exposing (Msg(UrlChange))
+import Model exposing (Model)
+import Navigation
+import Routing
+import Update
+import View
 
 
-init : ( Model, Cmd Msg )
-init =
-    ( {}, Cmd.none )
-
-
-
----- UPDATE ----
-
-
-type Msg
-    = NoOp
-
-
-update : Msg -> Model -> ( Model, Cmd Msg )
-update msg model =
-    ( model, Cmd.none )
-
-
-
----- VIEW ----
-
-
-view : Model -> Html Msg
-view model =
-    div []
-        [ img [ src "/logo.svg" ] []
-        , h1 [] [ text "Your Elm App is working!" ]
-        ]
-
-
-
----- PROGRAM ----
-
-
-main : Program () Model Msg
+main : Program Never Model Msg
 main =
-    Browser.element
-        { view = view
-        , init = \_ -> init
-        , update = update
-        , subscriptions = always Sub.none
+    Navigation.program
+        UrlChange
+        { init = init
+        , view = View.view
+        , update = Update.update
+        , subscriptions = \_ -> Sub.none
         }
+
+
+init : Navigation.Location -> ( Model, Cmd Msg )
+init location =
+    location
+        |> Routing.parse
+        |> Model.initialModel
+        |> Update.urlUpdate

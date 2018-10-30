@@ -1,5 +1,9 @@
-module Model exposing (Model, RemoteData(..), initialModel)
+module Model exposing (Model, RemoteData(..), init, initialModel)
 
+import Contact.Commands
+import ContactList.Commands
+import Navigation
+import Routing exposing (Route(ListContactsRoute, ShowContactRoute))
 import Contact.Model exposing (Contact)
 import ContactList.Model exposing (ContactList)
 import Material
@@ -33,3 +37,12 @@ initialModel route =
     , route = route
     , search = ""
     }
+
+
+init : Navigation.Location -> ( Model, Cmd Msg )
+init location =
+    (location
+        |> Routing.parse
+        |> initialModel
+    )
+        ! [ Material.init Mdl ]

@@ -4,12 +4,16 @@ import Contact.Commands
 import Contact.Update
 import ContactList.Commands
 import ContactList.Update
+import Material
+import Material.Snackbar as Snackbar
 import Messages
     exposing
         ( Msg
-            ( ContactMsg
-            , ContactListMsg
+            ( ContactListMsg
+            , ContactMsg
+            , Mdl
             , NavigateTo
+            , Snackbar
             , UpdateSearchQuery
             , UrlChange
             )
@@ -25,6 +29,16 @@ import Routing
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        Mdl msg ->
+            Material.update Mdl msg model
+
+        Snackbar msg ->
+            let
+                ( snackbar, snackCmd ) =
+                    Snackbar.update msg model.snackbar
+            in
+            { model | snackbar = snackbar } ! [ Cmd.map Snackbar snackCmd ]
+
         ContactMsg contactMsg ->
             Contact.Update.update contactMsg model
 

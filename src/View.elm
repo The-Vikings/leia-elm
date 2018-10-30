@@ -4,6 +4,15 @@ import Contact.View
 import ContactList.View
 import Html exposing (Html, div, h1, header, section, text)
 import Html.Attributes exposing (class)
+import Material.Button as Button
+import Material.Color as Color
+import Material.Dialog as Dialog
+import Material.Icon as Icon
+import Material.Layout as Layout
+import Material.Menu as Menu
+import Material.Options as Options exposing (cs, css, when)
+import Material.Scheme
+import Material.Snackbar as Snackbar
 import Messages exposing (Msg)
 import Model exposing (Model)
 import Routing

@@ -2,7 +2,9 @@ module Model exposing (Model, RemoteData(..), initialModel)
 
 import Contact.Model exposing (Contact)
 import ContactList.Model exposing (ContactList)
-import Routing exposing (Route)
+import Material
+import Material.Snackbar as Snackbar
+import Messages exposing (Msg(Mdl))
 
 
 type RemoteData e a
@@ -13,7 +15,9 @@ type RemoteData e a
 
 
 type alias Model =
-    { contact : RemoteData String Contact
+    { mdl : Material.Model
+    , snackbar : Snackbar.Model (Maybe Msg)
+    , contact : RemoteData String Contact
     , contactList : RemoteData String ContactList
     , route : Route
     , search : String
@@ -22,7 +26,9 @@ type alias Model =
 
 initialModel : Route -> Model
 initialModel route =
-    { contact = NotRequested
+    { mdl = Material.model
+    , snackbar = Snackbar.model
+    , contact = NotRequested
     , contactList = NotRequested
     , route = route
     , search = ""

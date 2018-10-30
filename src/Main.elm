@@ -5,6 +5,7 @@ import Model exposing (Model)
 import Navigation
 import Update
 import View
+import Subscriptions
 
 
 main : Program Never Model Msg
@@ -14,7 +15,6 @@ main =
         { init = Model.init
         , view = View.view
         , update = Update.update
-        , subscriptions = \_ -> Sub.none
+        , subscriptions = Subscriptions.subscriptions
         }
-
 

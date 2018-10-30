@@ -13,6 +13,9 @@ import Messages
             , ContactMsg
             , Mdl
             , NavigateTo
+            , PhoenixMsg
+            , SendMessage
+            , SetMessage
             , Snackbar
             , UpdateSearchQuery
             , UrlChange
@@ -20,6 +23,7 @@ import Messages
         )
 import Model exposing (Model, RemoteData(NotRequested, Requesting))
 import Navigation
+import Phoenix.Socket
 import Routing
     exposing
         ( Route(ListContactsRoute, ShowContactRoute)
@@ -56,7 +60,22 @@ update msg model =
                 currentRoute =
                     Routing.parse location
             in
-                urlUpdate { model | route = currentRoute }
+            urlUpdate { model | route = currentRoute }
+
+        PhoenixMsg msg ->
+            let
+                ( phxSocket, phxCmd ) =
+                    Phoenix.Socket.update msg model.phxSocket
+            in
+            ( { model | phxSocket = phxSocket }
+            , Cmd.map PhoenixMsg phxCmd
+            )
+
+        SetMessage message ->
+            ( { model | messageInProgress = message }, Cmd.none )
+
+        SendMessage ->
+            ( model, Cmd.none )
 
 
 urlUpdate : Model -> ( Model, Cmd Msg )

@@ -5,6 +5,7 @@ import ContactList.Messages exposing (ContactListMsg)
 import Material
 import Material.Snackbar as Snackbar
 import Navigation
+import Phoenix.Socket
 import Routing exposing (Route)
 
 
@@ -16,3 +17,6 @@ type Msg
     | NavigateTo Route
     | UpdateSearchQuery String
     | UrlChange Navigation.Location
+    | PhoenixMsg (Phoenix.Socket.Msg Msg)
+    | SetMessage String
+    | SendMessage

@@ -10,6 +10,7 @@ import Material
 import Material.Snackbar as Snackbar
 import Messages exposing (Msg(Mdl))
 
+import Phoenix.Socket
 
 type RemoteData e a
     = Failure e
@@ -25,6 +26,9 @@ type alias Model =
     , contactList : RemoteData String ContactList
     , route : Route
     , search : String
+    , messageInProgress : String
+    , messages : List String
+    , phxSocket : Phoenix.Socket.Socket Msg
     }
 
 
@@ -36,6 +40,9 @@ initialModel route =
     , contactList = NotRequested
     , route = route
     , search = ""
+    , messageInProgress = ""
+    , messages = [ "Test message" ]
+    , phxSocket = Phoenix.Socket.init "ws://localhost:4000/socket/websocket"
     }
 
 

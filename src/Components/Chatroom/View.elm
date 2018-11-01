@@ -1,4 +1,4 @@
-module Components.Chatroom.view exposing (view)
+module Components.Chatroom.View exposing (view)
 
 import Components.Chatroom.Model exposing (Chatroom)
 import Model exposing (Model)

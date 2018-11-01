@@ -42,7 +42,7 @@ initialModel route =
     , search = ""
     , messageInProgress = ""
     , messages = [ "Test message" ]
-    , phxSocket = Phoenix.Socket.init "ws://localhost:4000/socket/websocket"
+    , phxSocket = Phoenix.Socket.init "ws://localhost:80/socket/websocket" |> Phoenix.Socket.withDebug |> Phoenix.Socket.on "shout" "room:lobby" Messages.ReceiveMessage
     }
 
 

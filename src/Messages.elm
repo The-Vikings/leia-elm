@@ -2,6 +2,7 @@ module Messages exposing (Msg(..))
 
 import Contact.Messages exposing (ContactMsg)
 import ContactList.Messages exposing (ContactListMsg)
+import Json.Encode as JsEncode
 import Material
 import Material.Snackbar as Snackbar
 import Navigation
@@ -20,3 +21,5 @@ type Msg
     | PhoenixMsg (Phoenix.Socket.Msg Msg)
     | SetMessage String
     | SendMessage
+    | ReceiveMessage JsEncode.Value
+    | HandleSendError JsEncode.Value

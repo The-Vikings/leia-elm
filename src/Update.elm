@@ -4,6 +4,8 @@ import Contact.Commands
 import Contact.Update
 import ContactList.Commands
 import ContactList.Update
+import Json.Decode as JsDecode
+import Json.Encode as JsEncode
 import Material
 import Material.Snackbar as Snackbar
 import Messages
@@ -11,9 +13,11 @@ import Messages
         ( Msg
             ( ContactListMsg
             , ContactMsg
+            , HandleSendError
             , Mdl
             , NavigateTo
             , PhoenixMsg
+            , ReceiveMessage
             , SendMessage
             , SetMessage
             , Snackbar
@@ -23,6 +27,7 @@ import Messages
         )
 import Model exposing (Model, RemoteData(NotRequested, Requesting))
 import Navigation
+import Phoenix.Push
 import Phoenix.Socket
 import Routing
     exposing
@@ -75,7 +80,50 @@ update msg model =
             ( { model | messageInProgress = message }, Cmd.none )
 
         SendMessage ->
-            ( model, Cmd.none )
+            let
+                payload =
+                    JsEncode.object
+                        [ ( "message", JsEncode.string model.messageInProgress )
+                        ]
+
+                phxPush =
+                    Phoenix.Push.init "shout" "room:lobby"
+                        |> Phoenix.Push.withPayload payload
+                        |> Phoenix.Push.onOk ReceiveMessage
+                        |> Phoenix.Push.onError HandleSendError
+
+                ( phxSocket, phxCmd ) =
+                    Phoenix.Socket.push phxPush model.phxSocket
+            in
+            ( { model
+                | phxSocket = phxSocket
+              }
+            , Cmd.map PhoenixMsg phxCmd
+            )
+
+        ReceiveMessage raw ->
+            let
+                messageDecoder =
+                    JsDecode.field "message" JsDecode.string
+
+                somePayload =
+                    JsDecode.decodeValue messageDecoder raw
+            in
+            case somePayload of
+                Ok payload ->
+                    ( { model | messages = payload :: model.messages }
+                    , Cmd.none
+                    )
+
+                Err error ->
+                    ( model, Cmd.none )
+
+        HandleSendError _ ->
+            let
+                message =
+                    "Failed to Send Message"
+            in
+            ( { model | messages = message :: model.messages }, Cmd.none )
 
 
 urlUpdate : Model -> ( Model, Cmd Msg )

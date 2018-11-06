@@ -34,12 +34,6 @@ view model =
                 [ viewHeader model
                 , Snackbar.view model.snackbar |> Html.map Messages.Snackbar
                 , viewSource model
-                , Html.form []
-                    [ Html.input [] []
-                    , Html.button []
-                        [ Html.text "Submit"
-                        ]
-                    ]
                 , Html.div []
                     [ Html.ul []
                         [ Html.li []
@@ -58,7 +52,7 @@ viewHeader model =
         [ Color.background <| Color.color Color.Green Color.S100
         , Color.text <| Color.color Color.Orange Color.S900
         ]
-        [ Layout.title [] [ text "elm-mdl Dashboard Example" ]
+        [ Layout.title [] [ text "Chatroom message system demonstration" ]
         , Layout.spacer
         , Layout.navigation []
             []

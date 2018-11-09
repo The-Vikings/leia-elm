@@ -39,25 +39,6 @@ type alias ChatMessagePayload =
     }
 
 
-initialModel : Route -> Model
-initialModel route =
-    { mdl = Material.model
-    , snackbar = Snackbar.model
-    , contact = NotRequested
-    , contactList = NotRequested
-    , route = ListContactsRoute
-    , search = ""
-    , messageInProgress = ""
-    , messages = [ "Test message" ]
-    , phxSocket =
-        Phoenix.Socket.init "ws://localhost:80/socket/websocket"
-            |> Phoenix.Socket.withDebug
-            |> Phoenix.Socket.on "shout" "room:lobby" Messages.ReceiveMessage
-
-    --           |> Phoenix.Socket.join channel
-    }
-
-
 
 {--
 init : Navigation.Location -> ( Model, Cmd Msg )

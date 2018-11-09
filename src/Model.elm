@@ -1,5 +1,6 @@
-module Model exposing (ChatMessagePayload, Model, RemoteData(..), init, initialModel)
+module Model exposing (ChatMessagePayload, Model, RemoteData(..), init)
 
+import Components.Chatroom.Model exposing (Chatroom)
 import Contact.Model exposing (Contact)
 import ContactList.Model exposing (ContactList)
 import Material
@@ -8,6 +9,7 @@ import Messages exposing (Msg(Mdl))
 import Navigation
 import Phoenix.Channel
 import Phoenix.Socket
+import RemoteData exposing (WebData)
 import Routing exposing (Route(ListContactsRoute, ShowContactRoute))
 
 
@@ -28,6 +30,7 @@ type alias Model =
     , messageInProgress : String
     , messages : List String
     , phxSocket : Phoenix.Socket.Socket Msg
+    , chatrooms : WebData (List Chatroom)
     }
 
 
@@ -89,6 +92,7 @@ init location =
             , contactList = NotRequested
             , route = location |> Routing.parse
             , search = ""
+            , chatrooms = RemoteData.Loading
             }
     in
     ( model, Cmd.map Messages.PhoenixMsg phxCmd )

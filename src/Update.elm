@@ -16,6 +16,7 @@ import Messages
             , HandleSendError
             , Mdl
             , NavigateTo
+            , OnFetchChatrooms
             , PhoenixMsg
             , ReceiveMessage
             , SendMessage
@@ -124,6 +125,9 @@ update msg model =
                     "Failed to Send Message"
             in
             ( { model | messages = message :: model.messages }, Cmd.none )
+
+        OnFetchChatrooms response ->
+            ( { model | chatrooms = response }, Cmd.none )
 
 
 urlUpdate : Model -> ( Model, Cmd Msg )

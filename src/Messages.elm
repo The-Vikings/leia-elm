@@ -7,7 +7,9 @@ import Material
 import Material.Snackbar as Snackbar
 import Navigation
 import Phoenix.Socket
+import RemoteData exposing (WebData)
 import Routing exposing (Route)
+import Components.Chatroom.Model exposing (Chatroom)
 
 
 type Msg
@@ -23,3 +25,4 @@ type Msg
     | SendMessage
     | ReceiveMessage JsEncode.Value
     | HandleSendError JsEncode.Value
+    | OnFetchChatrooms (WebData (List Chatroom))

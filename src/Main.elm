@@ -8,10 +8,11 @@ import View
 import Subscriptions
 
 
+
 main : Program Never Model Msg
 main =
     Navigation.program
-        UrlChange
+        OnLocationChange
         { init = Model.init
         , view = View.view
         , update = Update.update

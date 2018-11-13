@@ -23,7 +23,7 @@ import Messages
             , SetMessage
             , Snackbar
             , UpdateSearchQuery
-            , UrlChange
+            , OnLocationChange
             )
         )
 import Model exposing (Model, RemoteData(NotRequested, Requesting))
@@ -56,12 +56,12 @@ update msg model =
             ContactList.Update.update contactListMsg model
 
         NavigateTo route ->
-            ( model, Navigation.newUrl (Routing.toPath route) )
+            ( model, Navigation.newUrl (Routing.chatroomPath route) )
 
         UpdateSearchQuery value ->
             ( { model | search = value }, Cmd.none )
 
-        UrlChange location ->
+        OnLocationChange location ->
             let
                 currentRoute =
                     Routing.parse location

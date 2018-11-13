@@ -19,10 +19,11 @@ type Msg
     | ContactListMsg ContactListMsg
     | NavigateTo Route
     | UpdateSearchQuery String
-    | UrlChange Navigation.Location
     | PhoenixMsg (Phoenix.Socket.Msg Msg)
     | SetMessage String
     | SendMessage
     | ReceiveMessage JsEncode.Value
     | HandleSendError JsEncode.Value
     | OnFetchChatrooms (WebData (List Chatroom))
+    | OnLocationChange Navigation.Location
+    

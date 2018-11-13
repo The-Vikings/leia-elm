@@ -1,4 +1,4 @@
-module Commands exposing (contactsApiUrl, fetchChatrooms)
+module Commands exposing (contactsApiUrl, chatroomsApiUrl, questionsApiUrl)
 
 import Components.Chatroom.Model exposing (Chatroom)
 import Http
@@ -13,25 +13,10 @@ contactsApiUrl =
     "/api/v1/contacts"
 
 
-fetchChatrooms : Cmd Msg
-fetchChatrooms =
-    Http.get fetchChatroomsUrl chatroomsDecoder
-        |> RemoteData.sendRequest
-        |> Cmd.map Messages.OnFetchChatrooms
+chatroomsApiUrl : String
+chatroomsApiUrl =
+    "/api/chatrooms"
 
-
-fetchChatroomsUrl : String
-fetchChatroomsUrl =
-    "http://localhost/api/chatrooms"
-
-
-chatroomsDecoder : Decode.Decoder (List Chatroom)
-chatroomsDecoder =
-    Decode.list chatroomDecoder
-
-
-chatroomDecoder : Decode.Decoder Chatroom
-chatroomDecoder =
-    decode Chatroom
-        |> required "id" Decode.string
-        |> required "name" Decode.string
+questionsApiUrl : String -> String
+questionsApiUrl chatroomId = 
+    chatroomsApiUrl ++ chatroomId ++ "/questions"

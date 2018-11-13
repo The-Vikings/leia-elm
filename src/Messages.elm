@@ -1,5 +1,8 @@
 module Messages exposing (Msg(..))
 
+import Components.Chatroom.Messages exposing (ChatroomMsg)
+import Components.Chatroom.Model exposing (Chatroom)
+import Components.Question.Messages exposing (QuestionMsg)
 import Contact.Messages exposing (ContactMsg)
 import ContactList.Messages exposing (ContactListMsg)
 import Json.Encode as JsEncode
@@ -9,7 +12,6 @@ import Navigation
 import Phoenix.Socket
 import RemoteData exposing (WebData)
 import Routing exposing (Route)
-import Components.Chatroom.Model exposing (Chatroom)
 
 
 type Msg
@@ -17,6 +19,7 @@ type Msg
     | Snackbar (Snackbar.Msg (Maybe Msg))
     | ContactMsg ContactMsg
     | ContactListMsg ContactListMsg
+    | ChatroomMsg ChatroomMsg
     | NavigateTo Route
     | UpdateSearchQuery String
     | PhoenixMsg (Phoenix.Socket.Msg Msg)
@@ -26,4 +29,3 @@ type Msg
     | HandleSendError JsEncode.Value
     | OnFetchChatrooms (WebData (List Chatroom))
     | OnLocationChange Navigation.Location
-    

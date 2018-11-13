@@ -1,5 +1,7 @@
 module Update exposing (update, urlUpdate)
 
+import Components.Chatroom.Commands
+import Components.Chatroom.Update
 import Contact.Commands
 import Contact.Update
 import ContactList.Commands
@@ -8,24 +10,7 @@ import Json.Decode as JsDecode
 import Json.Encode as JsEncode
 import Material
 import Material.Snackbar as Snackbar
-import Messages
-    exposing
-        ( Msg
-            ( ContactListMsg
-            , ContactMsg
-            , HandleSendError
-            , Mdl
-            , NavigateTo
-            , OnFetchChatrooms
-            , PhoenixMsg
-            , ReceiveMessage
-            , SendMessage
-            , SetMessage
-            , Snackbar
-            , UpdateSearchQuery
-            , OnLocationChange
-            )
-        )
+import Messages exposing (Msg(..))
 import Model exposing (Model, RemoteData(NotRequested, Requesting))
 import Navigation
 import Phoenix.Push
@@ -54,6 +39,9 @@ update msg model =
 
         ContactListMsg contactListMsg ->
             ContactList.Update.update contactListMsg model
+
+        ChatroomMsg chatroomMsg ->
+            Components.Chatroom.Update.update chatroomMsg model
 
         NavigateTo route ->
             ( model, Navigation.newUrl (Routing.chatroomPath route) )

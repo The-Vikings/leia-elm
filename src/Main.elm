@@ -1,27 +1,21 @@
 module Main exposing (main)
 
-import Messages exposing (Msg(UrlChange))
+import Messages exposing (Msg(..))
 import Model exposing (Model)
 import Navigation
-import Routing
 import Update
 import View
+import Subscriptions
+
 
 
 main : Program Never Model Msg
 main =
     Navigation.program
-        UrlChange
-        { init = init
+        OnLocationChange
+        { init = Model.init
         , view = View.view
         , update = Update.update
-        , subscriptions = \_ -> Sub.none
+        , subscriptions = Subscriptions.subscriptions
         }
 
-
-init : Navigation.Location -> ( Model, Cmd Msg )
-init location =
-    location
-        |> Routing.parse
-        |> Model.initialModel
-        |> Update.urlUpdate

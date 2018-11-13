@@ -1,4 +1,4 @@
-module Commands exposing (contactsApiUrl)
+module Commands exposing (contactsApiUrl, fetchChatrooms)
 
 import Components.Chatroom.Model exposing (Chatroom)
 import Http
@@ -35,4 +35,3 @@ chatroomDecoder =
     decode Chatroom
         |> required "id" Decode.string
         |> required "name" Decode.string
-        |> required "level" Decode.int

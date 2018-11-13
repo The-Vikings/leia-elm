@@ -1,5 +1,6 @@
 module Model exposing (ChatMessagePayload, Model, RemoteData(..), init)
 
+import Commands exposing (fetchChatrooms)
 import Components.Chatroom.Model exposing (Chatroom)
 import Contact.Model exposing (Contact)
 import ContactList.Model exposing (ContactList)
@@ -10,7 +11,7 @@ import Navigation
 import Phoenix.Channel
 import Phoenix.Socket
 import RemoteData exposing (WebData)
-import Routing exposing (Route(ListContactsRoute, ShowContactRoute))
+import Routing
 
 
 type RemoteData e a
@@ -25,7 +26,7 @@ type alias Model =
     , snackbar : Snackbar.Model (Maybe Msg)
     , contact : RemoteData String Contact
     , contactList : RemoteData String ContactList
-    , route : Route
+    , route : Routing.Route
     , search : String
     , messageInProgress : String
     , messages : List String
@@ -76,20 +77,4 @@ init location =
             , chatrooms = RemoteData.Loading
             }
     in
-    ( model, Cmd.map Messages.PhoenixMsg phxCmd )
-
-
-
-{--
-let
-        channel =
-            Phoenix.Channel.init "room:lobby"
-
-        ( initSocket, phxCmd ) =
-            Phoenix.Socket.init "ws://localhost:80/socket/websocket"
-                |> Phoenix.Socket.withDebug
-                |> Phoenix.Socket.on "shout" "room:lobby" Messages.ReceiveMessage
-                |> Phoenix.Socket.join channel
-    in
-
---}
+    ( model, Cmd.batch [ Cmd.map Messages.PhoenixMsg phxCmd, fetchChatrooms ] )

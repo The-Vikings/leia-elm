@@ -2,7 +2,6 @@ module View exposing (view)
 
 import Components.Chatroom.View
 import Components.PhoenixTest.View
-import Components.QuestionInput.View
 import Html exposing (Html, div, h1, header, section, text)
 import Material.Button as Button
 import Material.Color as Color
@@ -81,11 +80,6 @@ viewSource model =
 phoenixtest : Model -> Html Msg
 phoenixtest model =
     Components.PhoenixTest.View.view model
-
-
-questionInput : Model -> Html Msg
-questionInput model =
-    Components.QuestionInput.View.view model
 
 
 page : Model -> Html Msg

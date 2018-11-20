@@ -4,7 +4,6 @@ import Components.Chatroom.Model exposing (Chatroom)
 import Html exposing (Html, div, table, tbody, td, text, th, thead, tr)
 import Html.Attributes exposing (class)
 import Messages exposing (Msg)
-import Model exposing (Model)
 import RemoteData exposing (WebData)
 
 
@@ -14,6 +13,7 @@ view response =
         [ nav
         , maybeList response
         ]
+
 
 nav : Html Msg
 nav =
@@ -44,8 +44,6 @@ list chatrooms =
             [ thead []
                 [ tr []
                     [ th [] [ text "Id" ]
-                    , th [] [ text "Name" ]
-                    , th [] [ text "Actions" ]
                     ]
                 ]
             , tbody [] (List.map chatroomRow chatrooms)
@@ -57,10 +55,9 @@ chatroomRow : Chatroom -> Html Msg
 chatroomRow chatroom =
     tr []
         [ td [] [ text chatroom.id ]
-        , td [] [ text chatroom.name ]
-        , td []
-            []
         ]
+
+
 
 {--
 questionInput : Chatroom -> Html Msg

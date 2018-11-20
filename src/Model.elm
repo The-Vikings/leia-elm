@@ -1,6 +1,6 @@
 module Model exposing (ChatMessagePayload, Model, RemoteData(..), init)
 
-import Commands exposing (fetchChatrooms)
+import Components.Chatroom.Commands exposing (fetchChatrooms)
 import Components.Chatroom.Model exposing (Chatroom)
 import Contact.Model exposing (Contact)
 import ContactList.Model exposing (ContactList)
@@ -31,6 +31,7 @@ type alias Model =
     , messageInProgress : String
     , messages : List String
     , phxSocket : Phoenix.Socket.Socket Msg
+    , chatroom : RemoteData String Chatroom
     , chatrooms : WebData (List Chatroom)
     }
 
@@ -38,18 +39,6 @@ type alias Model =
 type alias ChatMessagePayload =
     { message : String
     }
-
-
-
-{--
-init : Navigation.Location -> ( Model, Cmd Msg )
-init location =
-    (location 
-        |> Routing.parse
-        |> initialModel
-    )
-        ! [ Material.init Mdl ]
---}
 
 
 init : Navigation.Location -> ( Model, Cmd Msg )
@@ -74,6 +63,7 @@ init location =
             , contactList = NotRequested
             , route = location |> Routing.parse
             , search = ""
+            , chatroom = NotRequested
             , chatrooms = RemoteData.Loading
             }
     in

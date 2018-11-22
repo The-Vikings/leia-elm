@@ -8,7 +8,6 @@ import Components.Question.Decoder
 import Components.Question.Model exposing (Question)
 import Http
 import Json.Decode as Decode exposing (field, int, list, string)
-import Json.Decode.Extra exposing ((|:))
 import Json.Decode.Pipeline exposing (decode, required)
 import Messages exposing (Msg(ChatroomMsg))
 import RemoteData

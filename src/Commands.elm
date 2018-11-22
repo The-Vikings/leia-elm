@@ -1,11 +1,4 @@
-module Commands exposing (contactsApiUrl, chatroomsApiUrl, questionsApiUrl)
-
-import Components.Chatroom.Model exposing (Chatroom)
-import Http
-import Json.Decode as Decode
-import Json.Decode.Pipeline exposing (decode, required)
-import Messages exposing (Msg)
-import RemoteData
+module Commands exposing (chatroomsApiUrl, contactsApiUrl, questionsApiUrl)
 
 
 contactsApiUrl : String
@@ -17,6 +10,7 @@ chatroomsApiUrl : String
 chatroomsApiUrl =
     "/api/chatrooms"
 
+
 questionsApiUrl : String -> String
-questionsApiUrl chatroomId = 
+questionsApiUrl chatroomId =
     chatroomsApiUrl ++ chatroomId ++ "/questions"

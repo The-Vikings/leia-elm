@@ -5,7 +5,7 @@ type alias Question =
     { id : QuestionId
     , votes : Int
     , text : String
-    , automaticAnswer : List AutomaticAnswer
+    , automaticAnswers : List AutomaticAnswer
     , userAnswers : List UserAnswer
     }
 

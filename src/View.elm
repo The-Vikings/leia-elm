@@ -40,6 +40,8 @@ view model =
                     ]
                 , Html.div []
                     [ page model ]
+                , Html.div []
+                    [ view2 model ]
                 ]
             }
 
@@ -84,7 +86,12 @@ phoenixtest model =
 
 page : Model -> Html Msg
 page model =
-    Components.Chatroom.View.view model.chatrooms
+    Components.Chatroom.View.view model.allChatrooms
+
+
+view2 : Model -> Html Msg
+view2 model =
+    Components.Chatroom.View.view2 model
 
 
 styles : String

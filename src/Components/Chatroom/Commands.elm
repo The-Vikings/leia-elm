@@ -1,4 +1,4 @@
-module Components.Chatroom.Commands exposing (fetchChatroom, fetchChatrooms)
+module Components.Chatroom.Commands exposing (fetchChatroom, fetchAllChatrooms, chatroomsDecoder)
 
 import Commands exposing (chatroomsApiUrl)
 import Components.Chatroom.Decoder as Decoder
@@ -25,8 +25,8 @@ fetchChatroom id =
         |> Cmd.map ChatroomMsg
 
 
-fetchChatrooms : Cmd Msg
-fetchChatrooms =
+fetchAllChatrooms : Cmd Msg
+fetchAllChatrooms =
     Http.get chatroomsApiUrl chatroomsDecoder
         |> RemoteData.sendRequest
         |> Cmd.map Messages.OnFetchChatrooms
@@ -40,8 +40,8 @@ chatroomsDecoder =
 chatroomDecoder : Decode.Decoder Chatroom
 chatroomDecoder =
     decode Chatroom
-        |> required "id" Decode.string
-        |> required "name" questionsDecoder
+        |> required "name" Decode.string
+        |> required "id" Decode.int
 
 
 questionsDecoder : Decode.Decoder (List Question)

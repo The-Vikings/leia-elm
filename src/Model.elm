@@ -1,7 +1,8 @@
 module Model exposing (ChatMessagePayload, Model, RemoteData(..), init)
 
-import Components.Chatroom.Commands exposing (fetchChatrooms)
+import Components.Chatroom.Commands exposing (fetchAllChatrooms)
 import Components.Chatroom.Model exposing (Chatroom)
+import Components.Question.Model exposing (Question)
 import Contact.Model exposing (Contact)
 import ContactList.Model exposing (ContactList)
 import Material
@@ -10,15 +11,15 @@ import Messages exposing (Msg(Mdl))
 import Navigation
 import Phoenix.Channel
 import Phoenix.Socket
-import RemoteData exposing (WebData)
+import RemoteData exposing (WebData, RemoteData)
 import Routing
 
 
-type RemoteData e a
-    = Failure e
+type RemoteData error value
+    = Failure error
     | NotRequested
     | Requesting
-    | Success a
+    | Success value
 
 
 type alias Model =
@@ -32,7 +33,9 @@ type alias Model =
     , messages : List String
     , phxSocket : Phoenix.Socket.Socket Msg
     , chatroom : RemoteData String Chatroom
-    , chatrooms : WebData (List Chatroom)
+    , allChatrooms : List Chatroom
+    , errorMessage : Maybe String
+    , questionsWithAnswers : WebData (List Question)
     }
 
 
@@ -64,7 +67,9 @@ init location =
             , route = location |> Routing.parse
             , search = ""
             , chatroom = NotRequested
-            , chatrooms = RemoteData.Loading
+            , allChatrooms = []
+            , errorMessage = Nothing
+            , questionsWithAnswers = RemoteData.NotAsked
             }
     in
-    ( model, Cmd.batch [ Cmd.map Messages.PhoenixMsg phxCmd, fetchChatrooms ] )
+    ( model, Cmd.batch [ Cmd.map Messages.PhoenixMsg phxCmd, fetchAllChatrooms ] )

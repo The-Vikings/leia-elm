@@ -11,7 +11,7 @@ import Messages exposing (Msg(Mdl))
 import Navigation
 import Phoenix.Channel
 import Phoenix.Socket
-import RemoteData exposing (WebData, RemoteData)
+import RemoteData exposing (WebData)
 import Routing
 
 
@@ -32,9 +32,8 @@ type alias Model =
     , messageInProgress : String
     , messages : List String
     , phxSocket : Phoenix.Socket.Socket Msg
-    , chatroom : RemoteData String Chatroom
-    , allChatrooms : List Chatroom
-    , errorMessage : Maybe String
+    , chatroom : WebData Chatroom
+    , allChatrooms : WebData (List Chatroom)
     , questionsWithAnswers : WebData (List Question)
     }
 
@@ -66,9 +65,8 @@ init location =
             , contactList = NotRequested
             , route = location |> Routing.parse
             , search = ""
-            , chatroom = NotRequested
-            , allChatrooms = []
-            , errorMessage = Nothing
+            , chatroom = RemoteData.NotAsked
+            , allChatrooms = RemoteData.NotAsked
             , questionsWithAnswers = RemoteData.NotAsked
             }
     in

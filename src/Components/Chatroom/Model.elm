@@ -1,15 +1,12 @@
-module Components.Chatroom.Model exposing (Chatroom, ChatroomPayload)
+module Components.Chatroom.Model exposing (Chatroom, ChatroomId)
 
 import Components.Question.Model exposing (Question)
 
 type alias Chatroom = 
-    { name : String
+    { questions : List Question
+    , name : String
     , id : ChatroomId
     }
 
 type alias ChatroomId =
     Int
-
-type alias ChatroomPayload = 
-    { data : List Chatroom
-    }

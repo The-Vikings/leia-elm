@@ -6,6 +6,7 @@ import Components.Question.Model exposing (Question)
 import Contact.Model exposing (Contact)
 import ContactList.Model exposing (ContactList)
 import Material
+import Material.Layout as Layout
 import Material.Snackbar as Snackbar
 import Messages exposing (Msg(Mdl))
 import Navigation
@@ -35,6 +36,7 @@ type alias Model =
     , chatroom : WebData Chatroom
     , allChatrooms : WebData (List Chatroom)
     , questionsWithAnswers : WebData (List Question)
+    , selectedTab : Int
     }
 
 
@@ -68,6 +70,7 @@ init location =
             , chatroom = RemoteData.NotAsked
             , allChatrooms = RemoteData.NotAsked
             , questionsWithAnswers = RemoteData.NotAsked
+            , selectedTab = 0
             }
     in
-    ( model, Cmd.batch [ Cmd.map Messages.PhoenixMsg phxCmd, fetchAllChatrooms ] )
+    ( { model | mdl = Layout.setTabsWidth 1384 model.mdl }, Cmd.batch [ Cmd.map Messages.PhoenixMsg phxCmd, fetchAllChatrooms, Layout.sub0 Mdl ] )

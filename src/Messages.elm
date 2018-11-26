@@ -32,3 +32,4 @@ type Msg
     | FetchAllChatrooms (WebData (List Chatroom))
     | SendHttpRequestAllChatrooms
     | SendHttpRequestChatroomWithQuestions String
+    | SelectTab Int

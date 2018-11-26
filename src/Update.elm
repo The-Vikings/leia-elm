@@ -25,6 +25,9 @@ update msg model =
         Mdl msg ->
             Material.update Mdl msg model
 
+        SelectTab num -> 
+            { model | selectedTab = num } ! []
+
         Snackbar msg ->
             let
                 ( snackbar, snackCmd ) =

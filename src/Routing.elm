@@ -1,12 +1,11 @@
-module Routing
-    exposing
-        ( Route(ListContactsRoute, NotFoundRoute, ShowContactRoute)
-        , parse
-        , chatroomPath
-        )
+module Routing exposing
+    ( Route(ChatroomRoute, FrontpageMenuRoute, ListContactsRoute, NotFoundRoute, ShowContactRoute)
+    , chatroomPath
+    , parse
+    )
 
 import Navigation exposing (Location)
-import UrlParser exposing (Parser, (</>), int, map, oneOf, s, top)
+import UrlParser exposing ((</>), Parser, int, map, oneOf, s, top)
 
 
 type Route
@@ -21,7 +20,7 @@ chatroomPath : Route -> String
 chatroomPath route =
     case route of
         ListContactsRoute ->
-            "/listcontacts/"   
+            "/listcontacts/"
 
         ShowContactRoute id ->
             "/contacts/" ++ toString id
@@ -32,33 +31,35 @@ chatroomPath route =
         ChatroomRoute id ->
             "/chatroom/" ++ toString id
 
-        FrontpageMenuRoute -> 
+        FrontpageMenuRoute ->
             "/"
 
+
 questionsPath : Route -> String
-questionsPath route = 
+questionsPath route =
     "#questions"
 
+
 questionPath : Route -> String
-questionPath id = 
+questionPath id =
     "#questions/" ++ toString id
+
 
 parse : Navigation.Location -> Route
 parse location =
-    case UrlParser.parsePath matchers location of    
+    case UrlParser.parsePath matchers location of
         Just route ->
             route
 
         Nothing ->
             NotFoundRoute
- -- doublecheck if we shoul route by "parseHash" instead of "parsePath"
 
 
 matchers : Parser (Route -> a) a
 matchers =
     oneOf
-        [ map FrontpageMenuRoute top 
+        [ map FrontpageMenuRoute top
         , map ListContactsRoute (s "")
         , map ShowContactRoute (s "contacts" </> int)
-        , map ChatroomRoute (s "chatroom" </> UrlParser.string )
+        , map ChatroomRoute (s "chatroom" </> UrlParser.string)
         ]

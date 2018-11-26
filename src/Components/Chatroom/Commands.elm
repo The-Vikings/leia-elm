@@ -1,49 +1,26 @@
-module Components.Chatroom.Commands exposing (fetchChatroom, fetchAllChatrooms, chatroomsDecoder)
+module Components.Chatroom.Commands exposing (fetchAllChatrooms, fetchChatroomWithQuestions)
 
-import Commands exposing (chatroomsApiUrl)
-import Components.Chatroom.Decoder as Decoder
-import Components.Chatroom.Messages exposing (ChatroomMsg(FetchChatroom))
-import Components.Chatroom.Model exposing (Chatroom)
-import Components.Question.Decoder
-import Components.Question.Model exposing (Question)
+import Commands exposing (allChatroomsApiUrl, currentChatroomApiUrl)
+import Components.Chatroom.Model exposing (ChatroomId)
+import Components.Chatroom.Decoder exposing (chatroomDecoder, chatroomListDecoder)
 import Http
-import Json.Decode as Decode exposing (field, int, list, string)
-import Json.Decode.Pipeline exposing (decode, required)
-import Messages exposing (Msg(ChatroomMsg))
+import Json.Decode as Decode exposing (field)
+import Messages exposing (Msg(..))
 import RemoteData
-
-
-fetchChatroom : String -> Cmd Msg
-fetchChatroom id =
-    let
-        apiUrl =
-            chatroomsApiUrl ++ "/" ++ id
-    in
-    Decoder.decoder
-        |> Http.get apiUrl
-        |> Http.send FetchChatroom
-        |> Cmd.map ChatroomMsg
+import Json.Decode as Decode exposing (list)
 
 
 fetchAllChatrooms : Cmd Msg
 fetchAllChatrooms =
-    Http.get chatroomsApiUrl chatroomsDecoder
+    Decode.field "data" chatroomListDecoder
+        |> Http.get allChatroomsApiUrl
         |> RemoteData.sendRequest
-        |> Cmd.map Messages.OnFetchChatrooms
+        |> Cmd.map Messages.FetchAllChatrooms
 
 
-chatroomsDecoder : Decode.Decoder (List Chatroom)
-chatroomsDecoder =
-    Decode.list chatroomDecoder
-
-
-chatroomDecoder : Decode.Decoder Chatroom
-chatroomDecoder =
-    decode Chatroom
-        |> required "name" Decode.string
-        |> required "id" Decode.int
-
-
-questionsDecoder : Decode.Decoder (List Question)
-questionsDecoder =
-    Decode.list Components.Question.Decoder.decoder
+fetchChatroomWithQuestions : String -> Cmd Msg
+fetchChatroomWithQuestions chatroomId =
+    Decode.field "data" chatroomDecoder
+        |> Http.get (currentChatroomApiUrl chatroomId)
+        |> RemoteData.sendRequest 
+        |> Cmd.map Messages.FetchChatroomWithQuestions

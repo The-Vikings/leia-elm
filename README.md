@@ -7,8 +7,9 @@ docker-compose up
 
 Documentation of short term solutions(Will be resolved after EOSP): 
 - Top level update functionality should be distrubuted on to components itself. Functinality for get request
-- Remove duplicate decoders which now is in Components.Chatroom.Decoder && Components.Chatroom.Commands. The code is still there as the functionality will be moved there after EOSP
 - Distrubute model so that errorMessage is stored in model.chatroom if the error comes from that call
+- typecast "value" to int in votes. Will be solved in the backend with time, as is hte proper solution
+
 
 
 The elm doc:
@@ -582,7 +583,7 @@ elm-app test --add-dependencies elm-package.json
 #### Travis CI
 
 1. Following the [Travis Getting started](https://docs.travis-ci.com/user/getting-started/) guide for syncing your GitHub repository with Travis.  You may need to initialize some settings manually in your [profile](https://travis-ci.org/profile) page.
-1. Add a `.travis.yml` file to your git repository.
+2. Add a `.travis.yml` file to your git repository.
 
 ```yaml
 language: node_js

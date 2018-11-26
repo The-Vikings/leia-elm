@@ -1,13 +1,8 @@
 module Update exposing (update, urlUpdate)
 
-import Commands exposing (chatroomsApiUrl)
 import Components.Chatroom.Commands as ChatroomCommands
-import Components.Chatroom.Model exposing (Chatroom, ChatroomPayload)
-import Components.Chatroom.Update as ChatroomUpdate
-import Components.Question.Model exposing (AutomaticAnswer, Question, UserAnswer)
 import Contact.Update
 import ContactList.Update
-import Http
 import Json.Decode as JsDecode exposing (Decoder, decodeString, field, int, list, map, map2, map3, map5, string)
 import Json.Encode as JsEncode
 import Material
@@ -17,6 +12,7 @@ import Model exposing (Model, RemoteData(Failure, NotRequested, Requesting, Succ
 import Navigation
 import Phoenix.Push
 import Phoenix.Socket
+import RemoteData
 import Routing
     exposing
         ( Route(ChatroomRoute, FrontpageMenuRoute, ListContactsRoute, ShowContactRoute)
@@ -41,9 +37,6 @@ update msg model =
 
         ContactListMsg contactListMsg ->
             ContactList.Update.update contactListMsg model
-
-        ChatroomMsg chatroomMsg ->
-            ChatroomUpdate.update chatroomMsg model
 
         NavigateTo route ->
             ( model, Navigation.newUrl (Routing.chatroomPath route) )
@@ -116,36 +109,17 @@ update msg model =
             in
             ( { model | messages = message :: model.messages }, Cmd.none )
 
-        OnFetchChatrooms response ->
-            --        ( { model | allChatrooms = response }, Cmd.none )
-            ( model, Cmd.none )
+        SendHttpRequestAllChatrooms ->
+            ( { model | allChatrooms = RemoteData.Loading }, ChatroomCommands.fetchAllChatrooms )
 
-        OnFetchQuestionsWithAnswers response ->
-            ( { model | questionsWithAnswers = response }, Cmd.none )
+        SendHttpRequestChatroomWithQuestions input ->
+            ( { model | chatroom = RemoteData.Loading }, ChatroomCommands.fetchChatroomWithQuestions (toString input) )
 
-        FetchChatroom (Ok response) ->
-            ( { model | chatroom = Success response }, Cmd.none )
+        FetchAllChatrooms chatroomsPayload ->
+            ( { model | allChatrooms = chatroomsPayload }, Cmd.none )
 
-        FetchChatroom (Err _) ->
-            ( { model | chatroom = Failure "Chatroom not found" }, Cmd.none )
-
-        SendHttpRequest ->
-            ( model, httpCommand )
-
-        FetchAllChatrooms (Ok chatroomPayload) ->
-            ( { model
-                | allChatrooms = chatroomPayload.data
-                , errorMessage = Nothing
-              }
-            , Cmd.none
-            )
-
-        FetchAllChatrooms (Err httpError) ->
-            ( { model
-                | errorMessage = Just (createErrorMessage httpError)
-              }
-            , Cmd.none
-            )
+        FetchChatroomWithQuestions chatroomPayload ->
+            ( { model | chatroom = chatroomPayload }, Cmd.none )
 
 
 urlUpdate : Model -> ( Model, Cmd Msg )
@@ -153,60 +127,16 @@ urlUpdate model =
     case model.route of
         FrontpageMenuRoute ->
             case model.allChatrooms of
-                [] ->
+                RemoteData.NotAsked ->
                     ( model, ChatroomCommands.fetchAllChatrooms )
 
                 _ ->
                     ( model, Cmd.none )
 
         ChatroomRoute id ->
-            ( { model | chatroom = Requesting }
-            , ChatroomCommands.fetchChatroom id
+            ( { model | chatroom = RemoteData.Loading }
+            , ChatroomCommands.fetchChatroomWithQuestions id
             )
 
         _ ->
             ( model, Cmd.none )
-
-
-createErrorMessage : Http.Error -> String
-createErrorMessage httpError =
-    case httpError of
-        Http.BadUrl message ->
-            message
-
-        Http.Timeout ->
-            "Server is taking too long to respond. Please try again later."
-
-        Http.NetworkError ->
-            "It appears you don't have an Internet connection right now."
-
-        Http.BadStatus response ->
-            response.status.message
-
-        Http.BadPayload message response ->
-            message
-
-
-httpCommand : Cmd Msg
-httpCommand =
-    payloadDecoder
-        |> Http.get chatroomsApiUrl
-        |> Http.send FetchAllChatrooms
-
-
-payloadDecoder : Decoder ChatroomPayload
-payloadDecoder =
-    map ChatroomPayload
-        (field "data" (list testDecoder))
-
-
-listDecoder : Decoder (List Chatroom)
-listDecoder =
-    list testDecoder
-
-
-testDecoder : Decoder Chatroom
-testDecoder =
-    map2 Chatroom
-        (field "name" string)
-        (field "id" int)

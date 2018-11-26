@@ -86,7 +86,7 @@ phoenixtest model =
 
 page : Model -> Html Msg
 page model =
-    Components.Chatroom.View.view model.allChatrooms
+    Components.Chatroom.View.view model
 
 
 view2 : Model -> Html Msg

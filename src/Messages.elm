@@ -2,9 +2,10 @@ module Messages exposing (Msg(..))
 
 import Components.Chatroom.Messages exposing (ChatroomMsg)
 import Components.Chatroom.Model exposing (Chatroom)
-import Components.Question.Messages exposing (QuestionMsg)
+import Components.Question.Model exposing (Question)
 import Contact.Messages exposing (ContactMsg)
 import ContactList.Messages exposing (ContactListMsg)
+import Http
 import Json.Encode as JsEncode
 import Material
 import Material.Snackbar as Snackbar
@@ -19,7 +20,6 @@ type Msg
     | Snackbar (Snackbar.Msg (Maybe Msg))
     | ContactMsg ContactMsg
     | ContactListMsg ContactListMsg
-    | ChatroomMsg ChatroomMsg
     | NavigateTo Route
     | UpdateSearchQuery String
     | PhoenixMsg (Phoenix.Socket.Msg Msg)
@@ -27,5 +27,9 @@ type Msg
     | SendMessage
     | ReceiveMessage JsEncode.Value
     | HandleSendError JsEncode.Value
-    | OnFetchChatrooms (WebData (List Chatroom))
     | OnLocationChange Navigation.Location
+    | FetchChatroomWithQuestions (WebData Chatroom)
+    | FetchAllChatrooms (WebData (List Chatroom))
+    | SendHttpRequestAllChatrooms
+    | SendHttpRequestChatroomWithQuestions String
+    | SelectTab Int

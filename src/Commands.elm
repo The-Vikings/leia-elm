@@ -1,16 +1,20 @@
-module Commands exposing (chatroomsApiUrl, contactsApiUrl, questionsApiUrl)
+module Commands exposing (allChatroomsApiUrl, contactsApiUrl, questionsApiUrl, currentChatroomApiUrl)
 
+import Components.Chatroom.Model exposing (ChatroomId)
 
 contactsApiUrl : String
 contactsApiUrl =
     "/api/v1/contacts"
 
 
-chatroomsApiUrl : String
-chatroomsApiUrl =
+allChatroomsApiUrl : String
+allChatroomsApiUrl =
     "/api/chatrooms"
 
+currentChatroomApiUrl : String -> String
+currentChatroomApiUrl chatroomId = 
+    allChatroomsApiUrl ++ chatroomId ++ "/all"
 
 questionsApiUrl : String -> String
 questionsApiUrl chatroomId =
-    chatroomsApiUrl ++ chatroomId ++ "/questions"
+    allChatroomsApiUrl ++ chatroomId ++ "/questions"

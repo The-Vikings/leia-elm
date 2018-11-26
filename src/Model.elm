@@ -1,10 +1,12 @@
 module Model exposing (ChatMessagePayload, Model, RemoteData(..), init)
 
-import Components.Chatroom.Commands exposing (fetchChatrooms)
+import Components.Chatroom.Commands exposing (fetchAllChatrooms)
 import Components.Chatroom.Model exposing (Chatroom)
+import Components.Question.Model exposing (Question)
 import Contact.Model exposing (Contact)
 import ContactList.Model exposing (ContactList)
 import Material
+import Material.Layout as Layout
 import Material.Snackbar as Snackbar
 import Messages exposing (Msg(Mdl))
 import Navigation
@@ -14,11 +16,11 @@ import RemoteData exposing (WebData)
 import Routing
 
 
-type RemoteData e a
-    = Failure e
+type RemoteData error value
+    = Failure error
     | NotRequested
     | Requesting
-    | Success a
+    | Success value
 
 
 type alias Model =
@@ -31,8 +33,10 @@ type alias Model =
     , messageInProgress : String
     , messages : List String
     , phxSocket : Phoenix.Socket.Socket Msg
-    , chatroom : RemoteData String Chatroom
-    , chatrooms : WebData (List Chatroom)
+    , chatroom : WebData Chatroom
+    , allChatrooms : WebData (List Chatroom)
+    , questionsWithAnswers : WebData (List Question)
+    , selectedTab : Int
     }
 
 
@@ -63,8 +67,10 @@ init location =
             , contactList = NotRequested
             , route = location |> Routing.parse
             , search = ""
-            , chatroom = NotRequested
-            , chatrooms = RemoteData.Loading
+            , chatroom = RemoteData.NotAsked
+            , allChatrooms = RemoteData.NotAsked
+            , questionsWithAnswers = RemoteData.NotAsked
+            , selectedTab = 0
             }
     in
-    ( model, Cmd.batch [ Cmd.map Messages.PhoenixMsg phxCmd, fetchChatrooms ] )
+    ( { model | mdl = Layout.setTabsWidth 1384 model.mdl }, Cmd.batch [ Cmd.map Messages.PhoenixMsg phxCmd, fetchAllChatrooms, Layout.sub0 Mdl ] )

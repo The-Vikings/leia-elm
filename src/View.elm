@@ -2,10 +2,15 @@ module View exposing (view)
 
 import Components.Chatroom.View
 import Components.PhoenixTest.View
+import Dict exposing (Dict)
 import Html exposing (Html, div, h1, header, section, text)
+import Html.Attributes exposing (class, href, style)
+import Html.Events exposing (onClick, onInput, onSubmit)
+import Material.Badge as Badge
 import Material.Button as Button
 import Material.Color as Color
 import Material.Layout as Layout
+import Material.List as List
 import Material.Options as Options exposing (cs, css, when)
 import Material.Scheme
 import Material.Snackbar as Snackbar
@@ -15,35 +20,27 @@ import Model exposing (Model)
 
 view : Model -> Html Msg
 view model =
-    Material.Scheme.top <|
+    Material.Scheme.topWithScheme Color.Teal Color.LightGreen <|
         Layout.render Messages.Mdl
             model.mdl
             [ Layout.fixedHeader
-            , Layout.fixedDrawer
+            , Layout.onSelectTab Messages.SelectTab
+            , Layout.selectedTab model.selectedTab
             , Options.css "display" "flex !important"
             , Options.css "flex-direction" "row"
             , Options.css "align-items" "center"
             ]
-            { header = []
+            { header = [ h1 [ style [ ( "padding", "0rem" ) ] ] [ text "Leia chatroom" ] ]
             , drawer = []
-            , tabs = ( [], [] )
+            , tabs = ( [ text "All chatrooms", text "Current Chatroom" ], [ Color.background (Color.color Color.Teal Color.S400) ] )
             , main =
-                [ viewHeader model
-                , Snackbar.view model.snackbar |> Html.map Messages.Snackbar
-                , viewSource model
-                , Html.div []
-                    [ Html.ul []
-                        [ Html.li []
-                            [ phoenixtest model
-                            ]
-                        ]
-                    ]
-                , Html.div []
-                    [ page model ]
+                [ viewBody model
                 ]
             }
 
 
+
+{--
 viewHeader : Model -> Html Msg
 viewHeader model =
     Layout.row
@@ -55,26 +52,20 @@ viewHeader model =
         , Layout.navigation []
             []
         ]
+--}
 
+viewBody : Model -> Html Msg
+viewBody model =
+    case model.selectedTab of
+        0 ->
+            phoenixtest model
 
-viewSource : Model -> Html Msg
-viewSource model =
-    Button.render Messages.Mdl
-        [ 5, 6, 6, 7 ]
-        model.mdl
-        [ css "position" "fixed"
-        , css "display" "block"
-        , css "left" "10"
-        , css "bottom" "0"
-        , css "margin-left" "0px"
-        , css "margin-bottom" "40px"
-        , css "z-index" "900"
-        , Color.text Color.white
-        , Button.ripple
-        , Button.colored
-        , Button.raised
-        ]
-        [ text "View Source" ]
+        1 ->
+            view2 model
+
+        _ ->
+            text "404"
+
 
 
 phoenixtest : Model -> Html Msg
@@ -84,7 +75,12 @@ phoenixtest model =
 
 page : Model -> Html Msg
 page model =
-    Components.Chatroom.View.view model.chatrooms
+    Components.Chatroom.View.view model
+
+
+view2 : Model -> Html Msg
+view2 model =
+    Components.Chatroom.View.view2 model
 
 
 styles : String

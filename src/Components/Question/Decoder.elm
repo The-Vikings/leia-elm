@@ -1,46 +1,48 @@
-module Components.Question.Decoder exposing (decoder)
+module Components.Question.Decoder exposing (questionsDecoder)
 
 import Components.Question.Model exposing (AutomaticAnswer, Question, UserAnswer)
-import Json.Decode as Decode exposing (field, int, list, string)
-import Json.Decode.Extra exposing ((|:))
+import Components.Votes.Model exposing (Votes)
+import Json.Decode as Decode exposing (Decoder, decodeString, field, int, list, map, map2, map3, map5, string)
+import Json.Decode.Pipeline exposing (decode, optional, required)
 
 
-decoder : Decode.Decoder Question
-decoder =
-    Decode.succeed
-        Question
-        |: field "id" int
-        |: field "votes" int
-        |: field "text" string
-        |: field "userAnswers" userAnswersDecoder
-        |: field "automaticAnswers" automaticAnswersDecoder
+questionsDecoder : Decoder Question
+questionsDecoder =
+    decode Question
+        |> required "votes" (list votesDecoder)
+        |> required "user_id" int
+        |> required "updated_at" string
+        |> optional "replies" (list userAnswerDecoder) []
+        |> required "inserted_at" string
+        |> required "id" int
+        |> required "body" string
 
 
-userAnswersDecoder : Decode.Decoder (List UserAnswer)
-userAnswersDecoder =
-    Decode.list userAnswerDecoder
-
-
-userAnswerDecoder : Decode.Decoder UserAnswer
-userAnswerDecoder =
-    Decode.succeed
-        UserAnswer
-        |: field "id" int
-        --Type is UserAnswerId
-        |: field "votes" int
-        |: field "text" string
-
-
-automaticAnswersDecoder : Decode.Decoder (List AutomaticAnswer)
-automaticAnswersDecoder =
-    Decode.list automaticAnswerDecoder
-
-
-automaticAnswerDecoder : Decode.Decoder AutomaticAnswer
+automaticAnswerDecoder : Decoder AutomaticAnswer
 automaticAnswerDecoder =
-    Decode.succeed
-        AutomaticAnswer
-        |: field "id" int
-        --Type is AutomaticAnswerId
-        |: field "votes" int
-        |: field "text" string
+    decode AutomaticAnswer
+        |> required "user_id" int
+        |> required "updated_at" string
+        |> required "question_id" int
+        |> required "inserted_at" string
+        |> required "body" string
+
+
+userAnswerDecoder : Decoder UserAnswer
+userAnswerDecoder =
+    decode UserAnswer
+        |> required "user_id" int
+        |> required "updated_at" string
+        |> required "question_id" int
+        |> required "inserted_at" string
+        |> required "body" string
+
+
+votesDecoder : Decoder Votes
+votesDecoder =
+    decode Votes
+        |> required "value" string 
+        |> required "user_id" int
+        |> required "updated_at" string
+        |> required "question_id" int
+        |> required "inserted_at" string

@@ -1,23 +1,21 @@
 module Update exposing (update, urlUpdate)
 
-import Components.Chatroom.Commands
-import Components.Chatroom.Update
-import Contact.Commands
+import Components.Chatroom.Commands as ChatroomCommands
 import Contact.Update
-import ContactList.Commands
 import ContactList.Update
-import Json.Decode as JsDecode
+import Json.Decode as JsDecode exposing (Decoder, decodeString, field, int, list, map, map2, map3, map5, string)
 import Json.Encode as JsEncode
 import Material
 import Material.Snackbar as Snackbar
 import Messages exposing (Msg(..))
-import Model exposing (Model, RemoteData(NotRequested, Requesting))
+import Model exposing (Model, RemoteData(Failure, NotRequested, Requesting, Success))
 import Navigation
 import Phoenix.Push
 import Phoenix.Socket
+import RemoteData
 import Routing
     exposing
-        ( Route(ListContactsRoute, ShowContactRoute)
+        ( Route(ChatroomRoute, FrontpageMenuRoute, ListContactsRoute, ShowContactRoute)
         )
 
 
@@ -26,6 +24,9 @@ update msg model =
     case msg of
         Mdl msg ->
             Material.update Mdl msg model
+
+        SelectTab num -> 
+            { model | selectedTab = num } ! []
 
         Snackbar msg ->
             let
@@ -39,9 +40,6 @@ update msg model =
 
         ContactListMsg contactListMsg ->
             ContactList.Update.update contactListMsg model
-
-        ChatroomMsg chatroomMsg ->
-            Components.Chatroom.Update.update chatroomMsg model
 
         NavigateTo route ->
             ( model, Navigation.newUrl (Routing.chatroomPath route) )
@@ -114,24 +112,33 @@ update msg model =
             in
             ( { model | messages = message :: model.messages }, Cmd.none )
 
-        OnFetchChatrooms response ->
-            ( { model | chatrooms = response }, Cmd.none )
+        SendHttpRequestAllChatrooms ->
+            ( { model | allChatrooms = RemoteData.Loading }, ChatroomCommands.fetchAllChatrooms )
+
+        SendHttpRequestChatroomWithQuestions input ->
+            ( { model | chatroom = RemoteData.Loading }, ChatroomCommands.fetchChatroomWithQuestions (toString input) )
+
+        FetchAllChatrooms chatroomsPayload ->
+            ( { model | allChatrooms = chatroomsPayload }, Cmd.none )
+
+        FetchChatroomWithQuestions chatroomPayload ->
+            ( { model | chatroom = chatroomPayload }, Cmd.none )
 
 
 urlUpdate : Model -> ( Model, Cmd Msg )
 urlUpdate model =
     case model.route of
-        ListContactsRoute ->
-            case model.contactList of
-                NotRequested ->
-                    ( model, ContactList.Commands.fetchContactList 1 "" )
+        FrontpageMenuRoute ->
+            case model.allChatrooms of
+                RemoteData.NotAsked ->
+                    ( model, ChatroomCommands.fetchAllChatrooms )
 
                 _ ->
                     ( model, Cmd.none )
 
-        ShowContactRoute id ->
-            ( { model | contact = Requesting }
-            , Contact.Commands.fetchContact id
+        ChatroomRoute id ->
+            ( { model | chatroom = RemoteData.Loading }
+            , ChatroomCommands.fetchChatroomWithQuestions id
             )
 
         _ ->

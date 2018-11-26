@@ -1,12 +1,15 @@
 module Components.Question.Model exposing (AutomaticAnswer, Question, UserAnswer)
 
+import Components.Votes.Model exposing (Votes)
 
 type alias Question =
-    { id : QuestionId
-    , votes : Int
-    , text : String
-    , automaticAnswer : List AutomaticAnswer
+    { votes : List Votes
+    , user_id : Int
+    , updated_at : String
     , userAnswers : List UserAnswer
+    , inserted_at : String
+    , id : QuestionId
+    , text : String
     }
 
 
@@ -15,22 +18,22 @@ type alias QuestionId =
 
 
 type alias AutomaticAnswer =
-    { id : AutomaticAnswerId
-    , votes : Int
+    { userId : UserId
+    , updated_at : String
+    , question_id : Int
+    , inserted_at : String
     , text : String
     }
-
-
-type alias AutomaticAnswerId =
-    Int
 
 
 type alias UserAnswer =
-    { id : UserAnswerId
-    , votes : Int
+    { userId : UserId
+    , updated_at : String
+    , question_id : Int
+    , inserted_at : String
     , text : String
     }
 
 
-type alias UserAnswerId =
+type alias UserId =
     Int

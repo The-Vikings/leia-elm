@@ -1,47 +1,79 @@
+Our docs
+
+If package is lacking, you might want to delete the folder "elm-stuff" and rerun:
+```
+docker-compose up
+```
+
+Documentation of short term solutions(Will be resolved after EOSP): 
+- Top level update functionality should be distrubuted on to components itself. Functinality for get request
+- Distrubute model so that errorMessage is stored in model.chatroom if the error comes from that call
+- typecast "value" to int in votes. Will be solved in the backend with time, as is hte proper solution
+
+
+
+The elm doc:
 This project is bootstrapped with [Create Elm App](https://github.com/halfzebra/create-elm-app).
 
 Below you will find some information on how to perform basic tasks.  
 You can find the most recent version of this guide [here](https://github.com/halfzebra/create-elm-app/blob/master/template/README.md).
 
 ## Table of Contents
+- [Table of Contents](#table-of-contents)
 - [Sending feedback](#sending-feedback)
-- [Folder structure](#folder-structure)
 - [Installing Elm packages](#installing-elm-packages)
 - [Installing JavaScript packages](#installing-javascript-packages)
+- [Folder structure](#folder-structure)
 - [Available scripts](#available-scripts)
-  - [elm-app build](#elm-app-build)
-  - [elm-app start](#elm-app-start)
-  - [elm-app install](#elm-app-install)
-  - [elm-app test](#elm-app-test)
-  - [elm-app eject](#elm-app-eject)
-  - [elm-app <elm-platform-comand>](#elm-app-elm-platform-comand)
-    - [package](#package)
-    - [repl](#repl)
-    - [make](#make)
-    - [reactor](#reactor)
+    - [`elm-app build`](#elm-app-build)
+    - [`elm-app start`](#elm-app-start)
+    - [`elm-app install`](#elm-app-install)
+    - [`elm-app test`](#elm-app-test)
+    - [`elm-app eject`](#elm-app-eject)
+    - [`elm-app <elm-platform-comand>`](#elm-app-elm-platform-comand)
+        - [`package`](#package)
+        - [`repl`](#repl)
+        - [`make`](#make)
+        - [`reactor`](#reactor)
 - [Turning on/off Elm Debugger](#turning-onoff-elm-debugger)
 - [Dead code elimination](#dead-code-elimination)
+- [Changing the base path of the assets in the HTML](#changing-the-base-path-of-the-assets-in-the-html)
 - [Changing the Page `<title>`](#changing-the-page-title)
 - [Adding a Stylesheet](#adding-a-stylesheet)
+    - [`main.css`](#maincss)
+    - [`index.js`](#indexjs)
 - [Post-Processing CSS](#post-processing-css)
 - [Using elm-css](#using-elm-css)
+    - [Step 1: Install elm-css npm package](#step-1-install-elm-css-npm-package)
+    - [Step 2: Install Elm dependencies](#step-2-install-elm-dependencies)
+    - [Step 3: Create the stylesheet file](#step-3-create-the-stylesheet-file)
+    - [Steap 4: Compiling the stylesheet](#steap-4-compiling-the-stylesheet)
+    - [Step 5: Import the compiled CSS file](#step-5-import-the-compiled-css-file)
+    - [Step 6: Using the stylesheet in your Elm code](#step-6-using-the-stylesheet-in-your-elm-code)
 - [Adding Images and Fonts](#adding-images-and-fonts)
 - [Using the `public` Folder](#using-the-public-folder)
-  - [Changing the HTML](#changing-the-html)
-  - [Adding Assets Outside of the Module System](#adding-assets-outside-of-the-module-system)
-  - [When to Use the `public` Folder](#when-to-use-the-public-folder)
+    - [Changing the HTML](#changing-the-html)
+    - [Adding Assets Outside of the Module System](#adding-assets-outside-of-the-module-system)
+    - [When to Use the `public` Folder](#when-to-use-the-public-folder)
 - [Using custom environment variables](#using-custom-environment-variables)
 - [Setting up API Proxy](#setting-up-api-proxy)
-- [Running tests](#running-tests)
-  - [Dependencies in Tests](#dependencies-in-tests)
-  - [Continuous Integration](#continuous-integration)
+- [Running Tests](#running-tests)
+    - [Dependencies in Tests](#dependencies-in-tests)
+    - [Continuous Integration](#continuous-integration)
+        - [Travis CI](#travis-ci)
 - [Making a Progressive Web App](#making-a-progressive-web-app)
-  - [Opting Out of Caching](#opting-out-of-caching)
-  - [Offline-First Considerations](#offline-first-considerations)
-  - [Progressive Web App Metadata](#progressive-web-app-metadata)
+    - [Opting Out of Caching](#opting-out-of-caching)
+    - [Offline-First Considerations](#offline-first-considerations)
+    - [Progressive Web App Metadata](#progressive-web-app-metadata)
 - [Deployment](#deployment)
-  - [Static Server](#static-server)
-  - [GitHub Pages](#github-pages)
+    - [Static Server](#static-server)
+    - [GitHub Pages](#github-pages)
+        - [Step 1: Add `homepage` to `elm-package.json`](#step-1-add-homepage-to-elm-packagejson)
+        - [Step 2: Build the static site](#step-2-build-the-static-site)
+        - [Step 3: Deploy the site by running `gh-pages -d build`](#step-3-deploy-the-site-by-running-gh-pages--d-build)
+        - [Step 4: Ensure your project’s settings use `gh-pages`](#step-4-ensure-your-projects-settings-use-gh-pages)
+        - [Step 5: Optionally, configure the domain](#step-5-optionally-configure-the-domain)
+        - [Notes on client-side routing](#notes-on-client-side-routing)
 - [IDE setup for Hot Module Replacement](#ide-setup-for-hot-module-replacement)
 
 ## Sending feedback
@@ -551,7 +583,7 @@ elm-app test --add-dependencies elm-package.json
 #### Travis CI
 
 1. Following the [Travis Getting started](https://docs.travis-ci.com/user/getting-started/) guide for syncing your GitHub repository with Travis.  You may need to initialize some settings manually in your [profile](https://travis-ci.org/profile) page.
-1. Add a `.travis.yml` file to your git repository.
+2. Add a `.travis.yml` file to your git repository.
 
 ```yaml
 language: node_js

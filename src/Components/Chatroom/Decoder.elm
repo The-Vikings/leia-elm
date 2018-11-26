@@ -1,19 +1,19 @@
-module Components.Chatroom.Decoder exposing (decoder)
+module Components.Chatroom.Decoder exposing (chatroomDecoder, chatroomListDecoder)
 
 import Components.Chatroom.Model exposing (Chatroom)
-import Components.Question.Model exposing (Question)
-import Components.Question.Decoder
-import Json.Decode as Decode exposing (field, int, list, string)
-import Json.Decode.Extra exposing ((|:))
+import Components.Question.Decoder exposing (questionsDecoder)
+import Json.Decode as Decode exposing (Decoder, decodeString, field, int, list, map, map2, map3, map5, string)
+import Json.Decode.Pipeline exposing (decode, optional, required)
 
 
-decoder : Decode.Decoder Chatroom
-decoder =
-    Decode.succeed
-        Chatroom
-        |: field "id" string
-        |: field "questions" questionsDecoder
+chatroomDecoder : Decoder Chatroom
+chatroomDecoder =
+    decode Chatroom
+        |> optional "questions" (list questionsDecoder) []
+        |> required "name" string
+        |> required "id" int
 
-questionsDecoder : Decode.Decoder (List Question)
-questionsDecoder =
-    Decode.list Components.Question.Decoder.decoder
+
+chatroomListDecoder : Decode.Decoder (List Chatroom)
+chatroomListDecoder =
+    Decode.list chatroomDecoder

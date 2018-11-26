@@ -5,10 +5,13 @@ import Components.Chatroom.Model exposing (Chatroom)
 import Html exposing (Html, div, h3, li, table, tbody, td, text, th, thead, tr, ul)
 import Html.Attributes exposing (class)
 import Html.Events exposing (onClick)
+import Http
+import Material.Card as Card
+import Material.Color as Color
+import Material.Options as Options exposing (cs, css, when)
 import Messages exposing (Msg(..))
 import Model exposing (Model)
 import RemoteData
-import Http
 
 
 view : Model -> Html Msg
@@ -32,6 +35,7 @@ view2 model =
         , viewChatnamesOrError model
         , text (toString fetchAllChatrooms)
         , text (toString (fetchChatroomWithQuestions "1"))
+ --       , viewCard model.mdl
         ]
 
 
@@ -49,6 +53,7 @@ viewChatnamesOrError model =
 
         RemoteData.Failure httpError ->
             viewError (createErrorMessage httpError)
+
 
 viewError : String -> Html Msg
 viewError errorMessage =
@@ -70,6 +75,7 @@ viewChatnames chatnames =
             ([ viewTableHeader ] ++ List.map viewChatname chatnames)
         ]
 
+
 viewTableHeader : Html Msg
 viewTableHeader =
     tr []
@@ -79,6 +85,7 @@ viewTableHeader =
             [ text "Name" ]
         ]
 
+
 viewChatname : Chatroom -> Html Msg
 viewChatname chatname =
     tr []
@@ -87,6 +94,7 @@ viewChatname chatname =
         , td []
             [ text chatname.name ]
         ]
+
 
 createErrorMessage : Http.Error -> String
 createErrorMessage httpError =
@@ -105,3 +113,28 @@ createErrorMessage httpError =
 
         Http.BadPayload message response ->
             message
+
+
+
+-- Mdl helper methods
+
+
+white : Options.Property c m
+white =
+    Color.text Color.white
+
+{--
+viewCard : Model -> Html Msg
+viewCard model = 
+    Card.view
+        [ css "height" "128px"
+        , css "width" "128px"
+        , Color.background (Color.color Color.Brown Color.S500)
+        -- Elevation
+        , if model.raised == k then Elevation.e8 else Elevation.e2
+        , Elevation.transition 250
+        , Options.onMouseEnter (Raise k)
+        , Options.onMouseLeave (Raise -1)
+        ]
+        [ Card.title [] [ Card.head [ white ] [ text "Hover here" ] ] ]
+--}

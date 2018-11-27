@@ -33,8 +33,6 @@ view2 model =
         [ Html.button [ onClick Messages.SendHttpRequestAllChatrooms ]
             [ text "Get data from server" ]
         , viewChatnamesOrError model
-        , text (toString fetchAllChatrooms)
-        , text (toString (fetchChatroomWithQuestions "1"))
  --       , viewCard model.mdl
         ]
 
@@ -70,7 +68,7 @@ viewError errorMessage =
 viewChatnames : List Chatroom -> Html Msg
 viewChatnames chatnames =
     div []
-        [ h3 [] [ text "Chatnames" ]
+        [ h3 [] [ text "verify all technical functionality" ]
         , table []
             ([ viewTableHeader ] ++ List.map viewChatname chatnames)
         ]

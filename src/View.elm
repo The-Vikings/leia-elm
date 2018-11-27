@@ -20,7 +20,7 @@ import Model exposing (Model)
 
 view : Model -> Html Msg
 view model =
-    Material.Scheme.topWithScheme Color.Teal Color.LightGreen <|
+    Material.Scheme.topWithScheme Color.Blue Color.LightBlue <|
         Layout.render Messages.Mdl
             model.mdl
             [ Layout.fixedHeader
@@ -32,7 +32,7 @@ view model =
             ]
             { header = [ h1 [ style [ ( "padding", "0rem" ) ] ] [ text "Leia chatroom" ] ]
             , drawer = []
-            , tabs = ( [ text "All chatrooms", text "Current Chatroom" ], [ Color.background (Color.color Color.Teal Color.S400) ] )
+            , tabs = ( [ text "All chatrooms", text "Current Chatroom" ], [ Color.background (Color.color Color.Blue Color.S400) ] )
             , main =
                 [ viewBody model
                 ]

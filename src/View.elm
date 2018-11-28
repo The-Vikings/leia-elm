@@ -20,7 +20,7 @@ import Model exposing (Model)
 
 view : Model -> Html Msg
 view model =
-    Material.Scheme.topWithScheme Color.Blue Color.LightBlue <|
+    Material.Scheme.topWithScheme Color.Indigo Color.Blue <|
         Layout.render Messages.Mdl
             model.mdl
             [ Layout.fixedHeader
@@ -30,9 +30,9 @@ view model =
             , Options.css "flex-direction" "row"
             , Options.css "align-items" "center"
             ]
-            { header = [ h1 [ style [ ( "padding", "0rem" ) ] ] [ text "Leia chatroom" ] ]
+            { header = [ h1 [ style [ ( "padding", "0rem" ) ] ] [ ] ]
             , drawer = []
-            , tabs = ( [ text "All chatrooms", text "Current Chatroom" ], [ Color.background (Color.color Color.Blue Color.S400) ] )
+            , tabs = ( [ text "All chatrooms", text "Current Chatroom" ], [ Color.background (Color.color Color.Blue Color.S800) ] )
             , main =
                 [ viewBody model
                 ]

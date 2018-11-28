@@ -30,11 +30,32 @@ nav =
 view2 : Model -> Html Msg
 view2 model =
     div []
-        [ Html.button [ onClick Messages.SendHttpRequestAllChatrooms ]
-            [ text "Get data from server" ]
+        [ Html.button [ onClick (Messages.SendHttpRequestAllChatrooms) ]
+            [ text "Get allChatrooms data from server" ]
+        , Html.button [ onClick (Messages.SendHttpRequestChatroomWithQuestions "170" ) ]
+            [ text "Get chatroomWithQuestions from server" ]
+        , viewChatnameOrError model
         , viewChatnamesOrError model
- --       , viewCard model.mdl
+
+        --       , viewCard model.mdl
         ]
+
+
+viewChatnameOrError : Model -> Html Msg
+viewChatnameOrError model =
+    case model.chatroom of
+        RemoteData.NotAsked ->
+            text ""
+
+        RemoteData.Loading ->
+            h3 [] [ text "Loading..." ]
+
+        RemoteData.Success allChatrooms ->
+            viewChatname allChatrooms
+
+        RemoteData.Failure httpError ->
+            viewError (createErrorMessage httpError)
+
 
 
 viewChatnamesOrError : Model -> Html Msg
@@ -68,7 +89,7 @@ viewError errorMessage =
 viewChatnames : List Chatroom -> Html Msg
 viewChatnames chatnames =
     div []
-        [ h3 [] [ text "verify all technical functionality" ]
+        [ h3 [] [ text "Verify functionality" ]
         , table []
             ([ viewTableHeader ] ++ List.map viewChatname chatnames)
         ]
@@ -76,21 +97,29 @@ viewChatnames chatnames =
 
 viewTableHeader : Html Msg
 viewTableHeader =
-    tr []
-        [ th []
-            [ text "ID" ]
-        , th []
-            [ text "Name" ]
+    Html.div []
+        [ Html.ul []
+            [ tr []
+                [ th []
+                    [ text "ID" ]
+                , th []
+                    [ text "Name" ]
+                ]
+            ]
         ]
 
 
 viewChatname : Chatroom -> Html Msg
 viewChatname chatname =
-    tr []
-        [ td []
-            [ text (toString chatname.id) ]
-        , td []
-            [ text chatname.name ]
+    Html.div []
+        [ Html.ul []
+            [ tr []
+                [ td []
+                    [ text (toString chatname.id) ]
+                , td []
+                    [ text chatname.name ]
+                ]
+            ]
         ]
 
 
@@ -120,6 +149,8 @@ createErrorMessage httpError =
 white : Options.Property c m
 white =
     Color.text Color.white
+
+
 
 {--
 viewCard : Model -> Html Msg

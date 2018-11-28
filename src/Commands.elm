@@ -13,8 +13,8 @@ allChatroomsApiUrl =
 
 currentChatroomApiUrl : String -> String
 currentChatroomApiUrl chatroomId = 
-    allChatroomsApiUrl ++ chatroomId ++ "/all"
+    allChatroomsApiUrl ++ "/" ++ chatroomId ++ "/all"
 
 questionsApiUrl : String -> String
 questionsApiUrl chatroomId =
-    allChatroomsApiUrl ++ chatroomId ++ "/questions"
+    allChatroomsApiUrl ++ "/" ++ chatroomId ++ "/questions"

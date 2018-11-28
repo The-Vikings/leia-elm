@@ -16,12 +16,12 @@ questionsDecoder =
         |> required "inserted_at" string
         |> required "id" int
         |> required "body" string
+        |> optional "autoanswers" (list automaticAnswerDecoder) []
 
 
 automaticAnswerDecoder : Decoder AutomaticAnswer
 automaticAnswerDecoder =
     decode AutomaticAnswer
-        |> required "user_id" int
         |> required "updated_at" string
         |> required "question_id" int
         |> required "inserted_at" string
@@ -41,7 +41,7 @@ userAnswerDecoder =
 votesDecoder : Decoder Votes
 votesDecoder =
     decode Votes
-        |> required "value" string 
+        |> required "value" int 
         |> required "user_id" int
         |> required "updated_at" string
         |> required "question_id" int

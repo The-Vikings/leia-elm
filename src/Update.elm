@@ -116,7 +116,7 @@ update msg model =
             ( { model | allChatrooms = RemoteData.Loading }, ChatroomCommands.fetchAllChatrooms )
 
         SendHttpRequestChatroomWithQuestions input ->
-            ( { model | chatroom = RemoteData.Loading }, ChatroomCommands.fetchChatroomWithQuestions (toString input) )
+            ( { model | chatroom = RemoteData.Loading }, ChatroomCommands.fetchChatroomWithQuestions input )
 
         FetchAllChatrooms chatroomsPayload ->
             ( { model | allChatrooms = chatroomsPayload }, Cmd.none )

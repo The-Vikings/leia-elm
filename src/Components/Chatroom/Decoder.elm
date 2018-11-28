@@ -6,7 +6,7 @@ import Json.Decode as Decode exposing (Decoder, decodeString, field, int, list, 
 import Json.Decode.Pipeline exposing (decode, optional, required)
 
 
-chatroomDecoder : Decoder Chatroom
+chatroomDecoder : Decode.Decoder Chatroom
 chatroomDecoder =
     decode Chatroom
         |> optional "questions" (list questionsDecoder) []

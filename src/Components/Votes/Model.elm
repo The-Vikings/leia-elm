@@ -1,7 +1,7 @@
 module Components.Votes.Model exposing (Votes)
 
 type alias Votes = 
-    { value : String  
+    { value : Int  
     , user_id : UserId
     , updated_at : String
     , question_id : Int

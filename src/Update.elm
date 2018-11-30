@@ -68,15 +68,16 @@ update msg model =
         SetMessage message ->
             ( { model | messageInProgress = message }, Cmd.none )
 
+        -- Add functionality for different messagetypes and functionality for reply too
         SendMessage ->
             let
                 payload =
                     JsEncode.object
-                        [ ( "message", JsEncode.string model.messageInProgress )
+                        [ ( "body", JsEncode.string model.messageInProgress )
                         ]
 
                 phxPush =
-                    Phoenix.Push.init "shout" "room:lobby"
+                    Phoenix.Push.init "newQuestion" "room:lobby"
                         |> Phoenix.Push.withPayload payload
                         |> Phoenix.Push.onOk ReceiveMessage
                         |> Phoenix.Push.onError HandleSendError

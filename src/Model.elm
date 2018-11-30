@@ -79,4 +79,4 @@ init location =
             , raised = -1
             }
     in
-    ( { model | mdl = Layout.setTabsWidth 1384 model.mdl }, Cmd.batch [ Cmd.map Messages.PhoenixMsg phxCmd, fetchAllChatrooms, Layout.sub0 Mdl ] )
+    ( { model | mdl = Layout.setTabsWidth 1384 model.mdl }, Cmd.batch [ Cmd.map Messages.PhoenixMsg phxCmd, fetchAllChatrooms, Layout.sub0 Mdl, Ports.setTitle (Routing.forRoute (location |> Routing.parse)) ] )

@@ -17,6 +17,7 @@ questionsDecoder =
         |> required "id" int
         |> required "body" string
         |> optional "autoanswers" (list automaticAnswerDecoder) []
+        |> optional "votesNumber" int 0
 
 
 automaticAnswerDecoder : Decoder AutomaticAnswer

@@ -12,6 +12,7 @@ import Messages exposing (Msg(Mdl))
 import Navigation
 import Phoenix.Channel
 import Phoenix.Socket
+import Ports
 import RemoteData exposing (WebData)
 import Routing
 

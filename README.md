@@ -8,6 +8,10 @@ docker-compose up
 Documentation of short term solutions(Will be resolved after EOSP): 
 - Top level update functionality should be distrubuted on to components itself. This means the messages and corresponding update functionality
 - Distrubute model so that errorMessage is stored in model.chatroom if the error comes from that call
+- Need to add functionality that alters the url based on actions, stored in the "route" field, so that the location and view is rendered based on the URL. Pruned before EOSP, due to the fact that this is a single page application
+- Frontpage logic for choosing chatroom
+- The general message to fetch a chatroom from api will now alter "selectedTab". Consider abstracting to another function
+- Track this commit, coming in V8 which as of now is 85% complete, will enable both dynamic shadowing and tooltip at the same time without bug. https://github.com/debois/elm-mdl/pull/290
 
 Deleting local docker volume(For instance needed if database changes has been made in the backend and there is no need for migration, due to empty database)
 This example will delete ALL local docker volumes, use with caution

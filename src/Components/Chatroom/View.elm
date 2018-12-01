@@ -1,6 +1,6 @@
 module Components.Chatroom.View exposing (view)
 
-import Components.Question.Model exposing (Question)
+import Components.Question.Model exposing (Question, QuestionId)
 import Components.Question.View exposing (view)
 import Html exposing (Html, div, h3, li, table, tbody, td, text, th, thead, tr, ul)
 import Material.Button as Button
@@ -50,8 +50,18 @@ viewQuestionsOrError model =
 
 viewQuestionCards : List Question -> Model -> Html Msg
 viewQuestionCards questions model =
-    Html.table [] (List.map (questionCard model) questions)
+    Html.table [] (List.map (questionCardOrExpandedCard model) questions)
 
+questionCardOrExpandedCard : Model -> Question -> Html Msg
+questionCardOrExpandedCard model question = 
+    case model.expandedQuestion of 
+        Just value ->
+            if question.id == value then
+                questionCard model question -- Will be exchanged with the view function for when a card should be expanded with it's replies
+            else 
+                questionCard model question
+        Nothing -> 
+            questionCard model question
 
 questionCard : Model -> Question -> Html Msg
 questionCard model question =
@@ -77,7 +87,7 @@ questionCard model question =
 
                 -- Restore default padding inside scrim
                 , css "width" "100%"
-                , Tooltip.attach Mdl [ question.id + 1 ]
+                , Tooltip.attach Mdl [ (negate question.id) ]
                 ]
                 [ text (toString question.votesNumber) ]
             ]
@@ -96,10 +106,10 @@ questionCard model question =
             [ Button.render Mdl
                 [ 0, 0 ]
                 model.mdl
-                [ Button.icon, Button.ripple, white, Tooltip.attach Mdl [ question.id + 1 ] ]
+                [ Button.icon, Button.ripple, white, Tooltip.attach Mdl [ (negate question.id) ] ]
                 [ Icon.i "thumb_up" ]
             , Tooltip.render Mdl
-                [ question.id + 1 ]
+                [ (negate question.id) ]
                 model.mdl
                 [ Tooltip.left
                 , Tooltip.large

@@ -2,7 +2,7 @@ module Model exposing (ChatMessagePayload, Model, RemoteData(..), init)
 
 import Components.Chatroom.Commands exposing (fetchAllChatrooms, fetchChatroomWithQuestions)
 import Components.Chatroom.Model exposing (Chatroom)
-import Components.Question.Model exposing (Question)
+import Components.Question.Model exposing (Question, QuestionId)
 import Contact.Model exposing (Contact)
 import ContactList.Model exposing (ContactList)
 import Dict exposing (Dict)
@@ -41,6 +41,7 @@ type alias Model =
     , selectedTab : Int
     , toggles : Dict (List Int) Bool
     , raised : Int
+    , expandedQuestion : Maybe QuestionId
     }
 
 
@@ -77,6 +78,7 @@ init location =
             , selectedTab = 0
             , toggles = Dict.empty
             , raised = -1
+            , expandedQuestion = Nothing
             }
     in
     ( { model | mdl = Layout.setTabsWidth 1384 model.mdl }, Cmd.batch [ Cmd.map Messages.PhoenixMsg phxCmd, fetchAllChatrooms, Layout.sub0 Mdl, Ports.setTitle (Routing.forRoute (location |> Routing.parse)) ] )

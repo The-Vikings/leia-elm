@@ -1,4 +1,4 @@
-module Components.Question.Model exposing (AutomaticAnswer, Question, UserAnswer)
+module Components.Question.Model exposing (AutomaticAnswer, Question, QuestionId, UserAnswer)
 
 import Components.Votes.Model exposing (Votes)
 

@@ -12,6 +12,7 @@ Documentation of short term solutions(Will be resolved after EOSP):
 - Frontpage logic for choosing chatroom
 - The general message to fetch a chatroom from api will now alter "selectedTab". Consider abstracting to another function
 - Track this commit, coming in V8 which as of now is 85% complete, will enable both dynamic shadowing and tooltip at the same time without bug. https://github.com/debois/elm-mdl/pull/290
+- Make the "questionCardOrExpandedCard" cleaner by not having hte same action on two different branches in the case statement
 
 Deleting local docker volume(For instance needed if database changes has been made in the backend and there is no need for migration, due to empty database)
 This example will delete ALL local docker volumes, use with caution

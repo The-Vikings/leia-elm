@@ -65,15 +65,20 @@ update msg model =
             , Cmd.map PhoenixMsg phxCmd
             )
 
-        SetMessage message ->
-            ( { model | messageInProgress = message }, Cmd.none )
+        SetChatroomTextInput message ->
+            ( { model | chatroomInProgress = message }, Cmd.none )
 
-        -- Add functionality for different messagetypes and functionality for reply too
-        SendMessage ->
+        SetQuestionTextInput message ->
+            ( { model | questionInProgress = message }, Cmd.none )
+
+        SetReplyTextInput message ->
+            ( { model | replyInProgress = message }, Cmd.none )
+
+        SendQuestion ->
             let
                 payload =
                     JsEncode.object
-                        [ ( "body", JsEncode.string model.messageInProgress )
+                        [ ( "body", JsEncode.string model.questionInProgress )
                         ]
 
                 phxPush =
@@ -87,6 +92,30 @@ update msg model =
             in
             ( { model
                 | phxSocket = phxSocket
+                , questionInProgress = ""
+              }
+            , Cmd.map PhoenixMsg phxCmd
+            )
+
+        SendReply ->
+            let
+                payload =
+                    JsEncode.object
+                        [ ( "body", JsEncode.string model.replyInProgress )
+                        ]
+
+                phxPush =
+                    Phoenix.Push.init "newReply" "room:lobby"
+                        |> Phoenix.Push.withPayload payload
+                        |> Phoenix.Push.onOk ReceiveMessage
+                        |> Phoenix.Push.onError HandleSendError
+
+                ( phxSocket, phxCmd ) =
+                    Phoenix.Socket.push phxPush model.phxSocket
+            in
+            ( { model
+                | phxSocket = phxSocket
+                , replyInProgress = ""
               }
             , Cmd.map PhoenixMsg phxCmd
             )

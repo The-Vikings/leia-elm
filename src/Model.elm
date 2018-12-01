@@ -32,7 +32,9 @@ type alias Model =
     , contactList : RemoteData String ContactList
     , route : Routing.Route
     , search : String
-    , messageInProgress : String
+    , chatroomInProgress : String
+    , questionInProgress : String
+    , replyInProgress : String
     , messages : List String
     , phxSocket : Phoenix.Socket.Socket Msg
     , chatroom : WebData Chatroom
@@ -59,12 +61,14 @@ init location =
         ( initSocket, phxCmd ) =
             Phoenix.Socket.init "ws://localhost:80/socket/websocket"
                 |> Phoenix.Socket.withDebug
-                |> Phoenix.Socket.on "shout" "room:lobby" Messages.ReceiveMessage
+                |> Phoenix.Socket.on "ping" "room:lobby" Messages.ReceiveMessage
                 |> Phoenix.Socket.join channel
 
         model =
             { phxSocket = initSocket
-            , messageInProgress = ""
+            , chatroomInProgress = ""
+            , questionInProgress = ""
+            , replyInProgress = ""
             , messages = [ "Test message", "test message 2" ]
             , mdl = Material.model
             , snackbar = Snackbar.model

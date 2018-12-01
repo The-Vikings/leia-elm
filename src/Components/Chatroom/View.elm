@@ -10,6 +10,7 @@ import Material.Elevation as Elevation
 import Material.Grid as Grid exposing (Device(..), cell, grid, size)
 import Material.Icon as Icon
 import Material.Options as Options exposing (cs, css, when)
+import Material.Textfield as Textfield
 import Material.Tooltip as Tooltip
 import Messages exposing (Msg(..))
 import Model exposing (Model)
@@ -22,7 +23,16 @@ view model =
     grid [ Options.css "max-width" "720px" ]
         [ cell
             [ size All 12
-            , Options.css "padding" "16px 32px"
+            , Options.css "align-items" "center"
+            , Options.css "padding" "32px 32px"
+            , Options.css "display" "flex"
+            , Options.css "flex-direction" "column"
+            ]
+            [ questionInput model
+            ]
+        , cell
+            [ size All 12
+            , Options.css "padding" "32px 32px"
             , Options.css "display" "flex"
             , Options.css "flex-direction" "column"
             , Options.css "align-items" "center"
@@ -127,5 +137,38 @@ questionCard model question =
                 , Tooltip.large
                 ]
                 [ text "This badge shows the amount of unread replies" ]
+            ]
+        ]
+
+
+questionInput : Model -> Html Msg
+questionInput model =
+    Card.view
+        [ Elevation.e2 -- add dynamic
+        , css "width" "400px"
+        , css "height" "120px"
+        ]
+        [ Card.text []
+            [ Textfield.render Mdl
+                [ 1 ]
+                model.mdl
+                [ Textfield.label "Write your question"
+                , Textfield.floatingLabel
+                , Textfield.text_
+                , Options.onInput SetQuestionTextInput
+                , Textfield.value model.questionInProgress
+                ]
+                []
+            ]
+        , Card.actions
+            [ Card.border ]
+            [ Button.render Mdl
+                [ 1, 0 ]
+                model.mdl
+                [ Button.ripple
+                , Button.accent
+                , Options.onClick SendQuestion
+                ]
+                [ text "Send question" ]
             ]
         ]

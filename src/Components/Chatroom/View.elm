@@ -49,8 +49,8 @@ viewQuestionsOrError model =
 
 
 viewQuestionCards : List Question -> Model -> Html Msg
-viewQuestionCards question model =
-    Html.table [] (List.map (questionCard model) question)
+viewQuestionCards questions model =
+    Html.table [] (List.map (questionCard model) questions)
 
 
 questionCard : Model -> Question -> Html Msg

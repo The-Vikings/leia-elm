@@ -1,4 +1,4 @@
-module Components.Votes.view exposing (view)
+module Components.Votes.View exposing (view)
 
 import Components.Votes.Model exposing (Votes)
 import Model exposing (Model)

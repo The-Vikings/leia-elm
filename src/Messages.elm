@@ -1,5 +1,7 @@
 module Messages exposing (Msg(..))
 
+import Components.Chatroom.Messages exposing (ChatroomMsg)
+import Components.Chatroom.Model exposing (Chatroom)
 import Contact.Messages exposing (ContactMsg)
 import ContactList.Messages exposing (ContactListMsg)
 import Json.Encode as JsEncode
@@ -9,7 +11,6 @@ import Navigation
 import Phoenix.Socket
 import RemoteData exposing (WebData)
 import Routing exposing (Route)
-import Components.Chatroom.Model exposing (Chatroom)
 
 
 type Msg
@@ -24,6 +25,11 @@ type Msg
     | SendMessage
     | ReceiveMessage JsEncode.Value
     | HandleSendError JsEncode.Value
-    | OnFetchChatrooms (WebData (List Chatroom))
     | OnLocationChange Navigation.Location
-    
+    | FetchChatroomWithQuestions (WebData Chatroom)
+    | FetchAllChatrooms (WebData (List Chatroom))
+    | SendHttpRequestAllChatrooms
+    | SendHttpRequestChatroomWithQuestions String
+    | SelectTab Int
+    | Toggle (List Int)
+    | Raise Int

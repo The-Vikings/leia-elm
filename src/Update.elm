@@ -1,38 +1,23 @@
 module Update exposing (update, urlUpdate)
 
-import Contact.Commands
+import Components.Chatroom.Commands as ChatroomCommands
 import Contact.Update
-import ContactList.Commands
 import ContactList.Update
-import Json.Decode as JsDecode
+import Dict
+import Json.Decode as JsDecode exposing (Decoder, decodeString, field, int, list, map, map2, map3, map5, string)
 import Json.Encode as JsEncode
 import Material
 import Material.Snackbar as Snackbar
-import Messages
-    exposing
-        ( Msg
-            ( ContactListMsg
-            , ContactMsg
-            , HandleSendError
-            , Mdl
-            , NavigateTo
-            , OnFetchChatrooms
-            , PhoenixMsg
-            , ReceiveMessage
-            , SendMessage
-            , SetMessage
-            , Snackbar
-            , UpdateSearchQuery
-            , OnLocationChange
-            )
-        )
-import Model exposing (Model, RemoteData(NotRequested, Requesting))
+import Messages exposing (Msg(..))
+import Model exposing (Model, RemoteData(Failure, NotRequested, Requesting, Success))
 import Navigation
 import Phoenix.Push
 import Phoenix.Socket
+import Ports
+import RemoteData
 import Routing
     exposing
-        ( Route(ListContactsRoute, ShowContactRoute)
+        ( Route(ChatroomRoute, FrontpageRoute, ListContactsRoute, ShowContactRoute)
         )
 
 
@@ -41,6 +26,9 @@ update msg model =
     case msg of
         Mdl msg ->
             Material.update Mdl msg model
+
+        SelectTab num ->
+            { model | selectedTab = num } ! []
 
         Snackbar msg ->
             let
@@ -56,7 +44,7 @@ update msg model =
             ContactList.Update.update contactListMsg model
 
         NavigateTo route ->
-            ( model, Navigation.newUrl (Routing.chatroomPath route) )
+            ( model, Cmd.batch [ Navigation.newUrl (Routing.forRoute route), Ports.setTitle (Routing.forRoute route) ] )
 
         UpdateSearchQuery value ->
             ( { model | search = value }, Cmd.none )
@@ -80,15 +68,16 @@ update msg model =
         SetMessage message ->
             ( { model | messageInProgress = message }, Cmd.none )
 
+        -- Add functionality for different messagetypes and functionality for reply too
         SendMessage ->
             let
                 payload =
                     JsEncode.object
-                        [ ( "message", JsEncode.string model.messageInProgress )
+                        [ ( "body", JsEncode.string model.messageInProgress )
                         ]
 
                 phxPush =
-                    Phoenix.Push.init "shout" "room:lobby"
+                    Phoenix.Push.init "newQuestion" "room:lobby"
                         |> Phoenix.Push.withPayload payload
                         |> Phoenix.Push.onOk ReceiveMessage
                         |> Phoenix.Push.onError HandleSendError
@@ -126,24 +115,48 @@ update msg model =
             in
             ( { model | messages = message :: model.messages }, Cmd.none )
 
-        OnFetchChatrooms response ->
-            ( { model | chatrooms = response }, Cmd.none )
+        SendHttpRequestAllChatrooms ->
+            ( { model | allChatrooms = RemoteData.Loading }, ChatroomCommands.fetchAllChatrooms )
+
+        SendHttpRequestChatroomWithQuestions input ->
+            ( { model | chatroom = RemoteData.Loading, selectedTab = 1 }, ChatroomCommands.fetchChatroomWithQuestions input )
+
+        FetchAllChatrooms chatroomsPayload ->
+            ( { model | allChatrooms = chatroomsPayload }, Cmd.none )
+
+        FetchChatroomWithQuestions chatroomPayload ->
+            ( { model | chatroom = chatroomPayload }, Cmd.none )
+
+        Toggle index ->
+            let
+                toggles =
+                    case Dict.get index model.toggles of
+                        Just v ->
+                            Dict.insert index (not v) model.toggles
+
+                        Nothing ->
+                            Dict.insert index True model.toggles
+            in
+            { model | toggles = toggles } ! []
+
+        Raise k ->
+            { model | raised = k } ! []
 
 
 urlUpdate : Model -> ( Model, Cmd Msg )
 urlUpdate model =
     case model.route of
-        ListContactsRoute ->
-            case model.contactList of
-                NotRequested ->
-                    ( model, ContactList.Commands.fetchContactList 1 "" )
+        FrontpageRoute ->
+            case model.allChatrooms of
+                RemoteData.NotAsked ->
+                    ( model, ChatroomCommands.fetchAllChatrooms )
 
                 _ ->
                     ( model, Cmd.none )
 
-        ShowContactRoute id ->
-            ( { model | contact = Requesting }
-            , Contact.Commands.fetchContact id
+        ChatroomRoute id ->
+            ( { model | chatroom = RemoteData.Loading }
+            , ChatroomCommands.fetchChatroomWithQuestions id
             )
 
         _ ->

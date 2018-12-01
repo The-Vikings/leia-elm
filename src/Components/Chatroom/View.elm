@@ -1,70 +1,121 @@
 module Components.Chatroom.View exposing (view)
 
-import Components.Chatroom.Model exposing (Chatroom)
-import Html exposing (Html, div, table, tbody, td, text, th, thead, tr)
-import Html.Attributes exposing (class)
-import Messages exposing (Msg)
+import Components.Question.Model exposing (Question)
+import Components.Question.View exposing (view)
+import Html exposing (Html, div, h3, li, table, tbody, td, text, th, thead, tr, ul)
+import Material.Button as Button
+import Material.Card as Card
+import Material.Color as Color
+import Material.Elevation as Elevation
+import Material.Grid as Grid exposing (Device(..), cell, grid, size)
+import Material.Icon as Icon
+import Material.Options as Options exposing (cs, css, when)
+import Material.Tooltip as Tooltip
+import Messages exposing (Msg(..))
 import Model exposing (Model)
-import RemoteData exposing (WebData)
+import RemoteData
+import Shared.View exposing (createErrorMessage, dynamic, viewError, white)
 
 
-view : WebData (List Chatroom) -> Html Msg
-view response =
-    div []
-        [ nav
-        , maybeList response
-        ]
-
-nav : Html Msg
-nav =
-    div [ class "clearfix mb2 white bg-black" ]
-        [ div [ class "left p2" ] [ text "Chatrooms" ] ]
-
-
-maybeList : WebData (List Chatroom) -> Html Msg
-maybeList response =
-    case response of
-        RemoteData.NotAsked ->
-            text ""
-
-        RemoteData.Loading ->
-            text "Loading..."
-
-        RemoteData.Success chatrooms ->
-            list chatrooms
-
-        RemoteData.Failure error ->
-            text (toString error)
-
-
-list : List Chatroom -> Html Msg
-list chatrooms =
-    div [ class "p2" ]
-        [ table []
-            [ thead []
-                [ tr []
-                    [ th [] [ text "Id" ]
-                    , th [] [ text "Name" ]
-                    , th [] [ text "Actions" ]
-                    ]
-                ]
-            , tbody [] (List.map chatroomRow chatrooms)
+view : Model -> Html Msg
+view model =
+    grid [ Options.css "max-width" "720px" ]
+        [ cell
+            [ size All 12
+            , Options.css "padding" "16px 32px"
+            , Options.css "display" "flex"
+            , Options.css "flex-direction" "column"
+            , Options.css "align-items" "center"
+            ]
+            [ viewQuestionsOrError model
             ]
         ]
 
 
-chatroomRow : Chatroom -> Html Msg
-chatroomRow chatroom =
-    tr []
-        [ td [] [ text chatroom.id ]
-        , td [] [ text chatroom.name ]
-        , td []
-            []
-        ]
+viewQuestionsOrError : Model -> Html Msg
+viewQuestionsOrError model =
+    case model.chatroom of
+        RemoteData.NotAsked ->
+            text ""
 
-{--
-questionInput : Chatroom -> Html Msg
-questionInput chatroom = 
-    div
-        [ ]
-        --}
+        RemoteData.Loading ->
+            h3 [] [ text "Loading..." ]
+
+        RemoteData.Success chatroom ->
+            viewQuestionCards chatroom.questions model
+
+        RemoteData.Failure httpError ->
+            viewError (createErrorMessage httpError)
+
+
+viewQuestionCards : List Question -> Model -> Html Msg
+viewQuestionCards questions model =
+    Html.table [] (List.map (questionCard model) questions)
+
+
+questionCard : Model -> Question -> Html Msg
+questionCard model question =
+    Card.view
+        [ Elevation.e2
+        , Tooltip.attach Mdl [ question.id ]
+        , css "width" "600px"
+        , css "height" "192px"
+        ]
+        [ Card.title
+            [ css "min-height" "10px"
+            , css "padding" "0"
+            , Options.css "align-items" "center"
+
+            -- Clear default padding to encompass scrim
+            , Color.background <| Color.color Color.Blue Color.S900
+            ]
+            [ Card.head
+                [ white
+                , Options.scrim 0.75
+                , css "padding" "16px"
+                , css "align-items" "center"
+
+                -- Restore default padding inside scrim
+                , css "width" "100%"
+                , Tooltip.attach Mdl [ question.id + 1 ]
+                ]
+                [ text (toString question.votesNumber) ]
+            ]
+        , Card.text []
+            [ text question.text ]
+        , Card.actions
+            [ Card.border ]
+            [ Button.render Mdl
+                [ 1, 0 ]
+                model.mdl
+                [ Button.ripple, Button.accent ]
+                --Add message to set expanded card here ]
+                [ text "Show Replies" ]
+            ]
+        , Card.menu []
+            [ Button.render Mdl
+                [ 0, 0 ]
+                model.mdl
+                [ Button.icon, Button.ripple, white, Tooltip.attach Mdl [ question.id + 1 ] ]
+                [ Icon.i "thumb_up" ]
+            , Tooltip.render Mdl
+                [ question.id + 1 ]
+                model.mdl
+                [ Tooltip.left
+                , Tooltip.large
+                ]
+                [ text "Press here to upvote this question" ]
+            , Button.render Mdl
+                [ 0, 0 ]
+                model.mdl
+                [ Button.icon, Button.ripple, white, Tooltip.attach Mdl [ question.id ] ]
+                [ Icon.i "message" ]
+            , Tooltip.render Mdl
+                [ question.id ]
+                model.mdl
+                [ Tooltip.left
+                , Tooltip.large
+                ]
+                [ text "This badge shows the amount of unread replies" ]
+            ]
+        ]

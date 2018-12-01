@@ -1,24 +1,28 @@
 module Model exposing (ChatMessagePayload, Model, RemoteData(..), init)
 
-import Commands exposing (fetchChatrooms)
+import Components.Chatroom.Commands exposing (fetchAllChatrooms, fetchChatroomWithQuestions)
 import Components.Chatroom.Model exposing (Chatroom)
+import Components.Question.Model exposing (Question)
 import Contact.Model exposing (Contact)
 import ContactList.Model exposing (ContactList)
+import Dict exposing (Dict)
 import Material
+import Material.Layout as Layout
 import Material.Snackbar as Snackbar
 import Messages exposing (Msg(Mdl))
 import Navigation
 import Phoenix.Channel
 import Phoenix.Socket
+import Ports
 import RemoteData exposing (WebData)
 import Routing
 
 
-type RemoteData e a
-    = Failure e
+type RemoteData error value
+    = Failure error
     | NotRequested
     | Requesting
-    | Success a
+    | Success value
 
 
 type alias Model =
@@ -31,25 +35,18 @@ type alias Model =
     , messageInProgress : String
     , messages : List String
     , phxSocket : Phoenix.Socket.Socket Msg
-    , chatrooms : WebData (List Chatroom)
+    , chatroom : WebData Chatroom
+    , allChatrooms : WebData (List Chatroom)
+    , questionsWithAnswers : WebData (List Question)
+    , selectedTab : Int
+    , toggles : Dict (List Int) Bool
+    , raised : Int
     }
 
 
 type alias ChatMessagePayload =
     { message : String
     }
-
-
-
-{--
-init : Navigation.Location -> ( Model, Cmd Msg )
-init location =
-    (location 
-        |> Routing.parse
-        |> initialModel
-    )
-        ! [ Material.init Mdl ]
---}
 
 
 init : Navigation.Location -> ( Model, Cmd Msg )
@@ -74,7 +71,12 @@ init location =
             , contactList = NotRequested
             , route = location |> Routing.parse
             , search = ""
-            , chatrooms = RemoteData.Loading
+            , chatroom = RemoteData.NotAsked
+            , allChatrooms = RemoteData.NotAsked
+            , questionsWithAnswers = RemoteData.NotAsked
+            , selectedTab = 0
+            , toggles = Dict.empty
+            , raised = -1
             }
     in
-    ( model, Cmd.batch [ Cmd.map Messages.PhoenixMsg phxCmd, fetchChatrooms ] )
+    ( { model | mdl = Layout.setTabsWidth 1384 model.mdl }, Cmd.batch [ Cmd.map Messages.PhoenixMsg phxCmd, fetchAllChatrooms, Layout.sub0 Mdl, Ports.setTitle (Routing.forRoute (location |> Routing.parse)) ] )

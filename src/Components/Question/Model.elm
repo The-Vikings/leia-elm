@@ -3,7 +3,7 @@ module Components.Question.Model exposing (AutomaticAnswer, Question, UserAnswer
 import Components.Votes.Model exposing (Votes)
 
 type alias Question =
-    { votesList : Int
+    { votesList : List Votes
     , user_id : Int
     , updated_at : String
     , userAnswers : List UserAnswer

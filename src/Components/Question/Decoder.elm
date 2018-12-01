@@ -9,7 +9,7 @@ import Json.Decode.Pipeline exposing (decode, optional, required)
 questionsDecoder : Decoder Question
 questionsDecoder =
     decode Question
-        |> required "votes" (list votesDecoder)
+        |> optional "votes" (list votesDecoder) []
         |> required "user_id" int
         |> required "updated_at" string
         |> optional "replies" (list userAnswerDecoder) []

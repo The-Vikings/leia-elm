@@ -14,8 +14,8 @@ view model =
     in
     Html.div []
         [ Html.ul [] (model.messages |> drawMessages)
-        , Html.form [ onSubmit Messages.SendMessage ]
-            [ Html.input [ onInput Messages.SetMessage ] 
+        , Html.form [ onSubmit Messages.SendQuestion ]
+            [ Html.input [ onInput Messages.SetQuestionTextInput ] 
                 []
             , Html.button []
                 [ Html.text "Submit"

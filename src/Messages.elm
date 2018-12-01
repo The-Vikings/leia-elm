@@ -21,8 +21,11 @@ type Msg
     | NavigateTo Route
     | UpdateSearchQuery String
     | PhoenixMsg (Phoenix.Socket.Msg Msg)
-    | SetMessage String
-    | SendMessage
+    | SetChatroomTextInput String
+    | SetQuestionTextInput String
+    | SetReplyTextInput String
+    | SendQuestion
+    | SendReply
     | ReceiveMessage JsEncode.Value
     | HandleSendError JsEncode.Value
     | OnLocationChange Navigation.Location
@@ -33,3 +36,4 @@ type Msg
     | SelectTab Int
     | Toggle (List Int)
     | Raise Int
+    | ExpandQuestion (Maybe Int)

@@ -1,7 +1,6 @@
 module Components.Chatroom.Commands exposing (fetchAllChatrooms, fetchChatroomWithQuestions)
 
 import Commands exposing (allChatroomsApiUrl, currentChatroomApiUrl)
-import Components.Chatroom.Model exposing (ChatroomId)
 import Components.Chatroom.Decoder exposing (chatroomDecoder, chatroomListDecoder)
 import Http
 import Json.Decode as Decode exposing (field)

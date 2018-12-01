@@ -2,10 +2,8 @@ module Messages exposing (Msg(..))
 
 import Components.Chatroom.Messages exposing (ChatroomMsg)
 import Components.Chatroom.Model exposing (Chatroom)
-import Components.Question.Model exposing (Question)
 import Contact.Messages exposing (ContactMsg)
 import ContactList.Messages exposing (ContactListMsg)
-import Http
 import Json.Encode as JsEncode
 import Material
 import Material.Snackbar as Snackbar
@@ -33,3 +31,5 @@ type Msg
     | SendHttpRequestAllChatrooms
     | SendHttpRequestChatroomWithQuestions String
     | SelectTab Int
+    | Toggle (List Int)
+    | Raise Int

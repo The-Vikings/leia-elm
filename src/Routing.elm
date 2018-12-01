@@ -1,6 +1,6 @@
 module Routing exposing
-    ( Route(ChatroomRoute, FrontpageMenuRoute, ListContactsRoute, NotFoundRoute, ShowContactRoute)
-    , chatroomPath
+    ( Route(ChatroomRoute, FrontpageRoute, ListContactsRoute, NotFoundRoute, ShowContactRoute)
+    , forRoute
     , parse
     )
 
@@ -13,11 +13,11 @@ type Route
     | NotFoundRoute
     | ShowContactRoute Int
     | ChatroomRoute String
-    | FrontpageMenuRoute
+    | FrontpageRoute
 
 
-chatroomPath : Route -> String
-chatroomPath route =
+forRoute : Route -> String
+forRoute route =
     case route of
         ListContactsRoute ->
             "/listcontacts/"
@@ -31,8 +31,10 @@ chatroomPath route =
         ChatroomRoute id ->
             "/chatroom/" ++ toString id
 
-        FrontpageMenuRoute ->
-            "/"
+        FrontpageRoute ->
+            "/Frontpage"
+
+        
 
 
 questionsPath : Route -> String
@@ -58,7 +60,7 @@ parse location =
 matchers : Parser (Route -> a) a
 matchers =
     oneOf
-        [ map FrontpageMenuRoute top
+        [ map FrontpageRoute top
         , map ListContactsRoute (s "")
         , map ShowContactRoute (s "contacts" </> int)
         , map ChatroomRoute (s "chatroom" </> UrlParser.string)

@@ -9,19 +9,20 @@ import Json.Decode.Pipeline exposing (decode, optional, required)
 questionsDecoder : Decoder Question
 questionsDecoder =
     decode Question
-        |> required "votes" (list votesDecoder)
+        |> optional "votes" (list votesDecoder) []
         |> required "user_id" int
         |> required "updated_at" string
         |> optional "replies" (list userAnswerDecoder) []
         |> required "inserted_at" string
         |> required "id" int
         |> required "body" string
+        |> optional "autoanswers" (list automaticAnswerDecoder) []
+        |> optional "votesNumber" int 0
 
 
 automaticAnswerDecoder : Decoder AutomaticAnswer
 automaticAnswerDecoder =
     decode AutomaticAnswer
-        |> required "user_id" int
         |> required "updated_at" string
         |> required "question_id" int
         |> required "inserted_at" string
@@ -41,7 +42,7 @@ userAnswerDecoder =
 votesDecoder : Decoder Votes
 votesDecoder =
     decode Votes
-        |> required "value" string 
+        |> required "value" int 
         |> required "user_id" int
         |> required "updated_at" string
         |> required "question_id" int

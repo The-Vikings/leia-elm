@@ -6,13 +6,87 @@ docker-compose up
 ```
 
 Documentation of short term solutions(Will be resolved after EOSP): 
-- Top level update functionality should be distrubuted on to components itself. Functinality for get request
+- Top level update functionality should be distrubuted on to components itself. This means the messages and corresponding update functionality
 - Distrubute model so that errorMessage is stored in model.chatroom if the error comes from that call
-- typecast "value" to int in votes. Will be solved in the backend with time, as is hte proper solution
+- Need to add functionality that alters the url based on actions, stored in the "route" field, so that the location and view is rendered based on the URL. Pruned before EOSP, due to the fact that this is a single page application
+- Frontpage logic for choosing chatroom
+- The general message to fetch a chatroom from api will now alter "selectedTab". Consider abstracting to another function
+- Track this commit, coming in V8 which as of now is 85% complete, will enable both dynamic shadowing and tooltip at the same time without bug. https://github.com/debois/elm-mdl/pull/290
+
+Deleting local docker volume(For instance needed if database changes has been made in the backend and there is no need for migration, due to empty database)
+This example will delete ALL local docker volumes, use with caution
+```
+$ docker stop $(docker ps -aq)
+$ docker rm $(docker ps -aq)
+$ docker volume prune
+
+you might want to remove "leia-elm/elm-stuff". The packages here are automatically reinstalled
+```
+
+Git flow  when rebasing: 
+```
+Either commit or stash your changes: $ git stash  (OR)  $ git commit
+$ git checkout development && git pull development
+$ git checkout <your featurebranch> && git rebase development
+Until finished, resolve eventual conflicts and then run $ git rebase --continue 
+Make sure you're on your featurebranch, then: $ git push --force-with-lease
+If you stashed: $ git stash pop
+* Gitmoji :beers: all the way *
+Last step: Git good, hehe
+```
+
+When commit'ing
+```
+check that you're on your matching featurebranch
+$ git add <file_path> -p    
+$ git commit -m ":<matching gitmoji>: <commit message>
+Git push
+Make pull request on github in browser
+```
+The "-p" makes the command [pick hunks interactively](https://coderwall.com/p/u4vjkw/git-add-interactive-or-how-to-make-amazing-commits).  
+Here you can choose your [matching gitmoji](https://gitmoji.carloscuesta.me).
+
+"-p" flag does the same as:
+```
+git add --interactive
+p (for patch)
+* (choose all the files)
+```
+
+Devops and dockerization
+
+Dockerization of the environment was important for us, both to learn more about docker and also to avoid version errors on different systems
+The use of brunch as our build tool was chosen as it had sufficient documentation of being used with phoenix and elm. In the brunch config, this line adds the directories being watched by the brunch watchers: 
+```
+// Dependencies and current project directories to watch
+    watched: ["static", "css", "js", "vendor", "leia-elm"],
+```
+one line is incredibly important because of the dockerization:
+```
+notifications: false, 
+```
+This line is keeps the brunch watchers from crashing without notice when they cannot access the system notifications because it is being runned in a container. There are issues regarding fixing this in the brunch repo, which as of 28.Nov.2018 are more than one year old. 
+
+It has come apparent that the watchers will still crash after several minutes of programming, which for instance can be discovered by seeing the linenumbers not matching the code on said numbers. If this happens, the container must be stopped (can be killed) and rerun with
+```
+$ docker-compose up
+```
+These lines in the brunch config reduces the amount of crashes due to excessive changes caused by auto saves in an editor:
+```
+  watcher: {
+    usePolling: true,
+    awaitWriteFinish: true
+  },
+```
+Setting an "autosave delay" in your editor of for instance 2000 milliseconds reduces it further
+
+The watchers will only crash due to error handling in the code, and you can have confidence in that if no errors are written to console, then there are no errors. 
+Warnings, for instance about unused imports are found on save in the specific files
+  
 
 
-
-The elm doc:
+  
+The elm doc:  
 This project is bootstrapped with [Create Elm App](https://github.com/halfzebra/create-elm-app).
 
 Below you will find some information on how to perform basic tasks.  

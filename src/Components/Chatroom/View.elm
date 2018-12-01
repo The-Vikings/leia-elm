@@ -1,140 +1,121 @@
-module Components.Chatroom.View exposing (view, view2)
+module Components.Chatroom.View exposing (view)
 
-import Components.Chatroom.Commands exposing (..)
-import Components.Chatroom.Model exposing (Chatroom)
+import Components.Question.Model exposing (Question)
+import Components.Question.View exposing (view)
 import Html exposing (Html, div, h3, li, table, tbody, td, text, th, thead, tr, ul)
-import Html.Attributes exposing (class)
-import Html.Events exposing (onClick)
-import Http
+import Material.Button as Button
 import Material.Card as Card
 import Material.Color as Color
+import Material.Elevation as Elevation
+import Material.Grid as Grid exposing (Device(..), cell, grid, size)
+import Material.Icon as Icon
 import Material.Options as Options exposing (cs, css, when)
+import Material.Tooltip as Tooltip
 import Messages exposing (Msg(..))
 import Model exposing (Model)
 import RemoteData
+import Shared.View exposing (createErrorMessage, dynamic, viewError, white)
 
 
 view : Model -> Html Msg
-view response =
-    div []
-        [ nav
+view model =
+    grid [ Options.css "max-width" "720px" ]
+        [ cell
+            [ size All 12
+            , Options.css "padding" "16px 32px"
+            , Options.css "display" "flex"
+            , Options.css "flex-direction" "column"
+            , Options.css "align-items" "center"
+            ]
+            [ viewQuestionsOrError model
+            ]
         ]
 
 
-nav : Html Msg
-nav =
-    div [ class "clearfix mb2 white bg-black" ]
-        [ div [ class "left p2" ] [ text "Chatrooms" ] ]
-
-
-view2 : Model -> Html Msg
-view2 model =
-    div []
-        [ Html.button [ onClick Messages.SendHttpRequestAllChatrooms ]
-            [ text "Get data from server" ]
-        , viewChatnamesOrError model
-        , text (toString fetchAllChatrooms)
-        , text (toString (fetchChatroomWithQuestions "1"))
- --       , viewCard model.mdl
-        ]
-
-
-viewChatnamesOrError : Model -> Html Msg
-viewChatnamesOrError model =
-    case model.allChatrooms of
+viewQuestionsOrError : Model -> Html Msg
+viewQuestionsOrError model =
+    case model.chatroom of
         RemoteData.NotAsked ->
             text ""
 
         RemoteData.Loading ->
             h3 [] [ text "Loading..." ]
 
-        RemoteData.Success allChatrooms ->
-            viewChatnames allChatrooms
+        RemoteData.Success chatroom ->
+            viewQuestionCards chatroom.questions model
 
         RemoteData.Failure httpError ->
             viewError (createErrorMessage httpError)
 
 
-viewError : String -> Html Msg
-viewError errorMessage =
-    let
-        errorHeading =
-            "Couldn't fetch chatnames at this time."
-    in
-    div []
-        [ h3 [] [ text errorHeading ]
-        , text ("Error: " ++ errorMessage)
-        ]
+viewQuestionCards : List Question -> Model -> Html Msg
+viewQuestionCards questions model =
+    Html.table [] (List.map (questionCard model) questions)
 
 
-viewChatnames : List Chatroom -> Html Msg
-viewChatnames chatnames =
-    div []
-        [ h3 [] [ text "Chatnames" ]
-        , table []
-            ([ viewTableHeader ] ++ List.map viewChatname chatnames)
-        ]
-
-
-viewTableHeader : Html Msg
-viewTableHeader =
-    tr []
-        [ th []
-            [ text "ID" ]
-        , th []
-            [ text "Name" ]
-        ]
-
-
-viewChatname : Chatroom -> Html Msg
-viewChatname chatname =
-    tr []
-        [ td []
-            [ text (toString chatname.id) ]
-        , td []
-            [ text chatname.name ]
-        ]
-
-
-createErrorMessage : Http.Error -> String
-createErrorMessage httpError =
-    case httpError of
-        Http.BadUrl message ->
-            message
-
-        Http.Timeout ->
-            "Server is taking too long to respond. Please try again later."
-
-        Http.NetworkError ->
-            "It appears you don't have an Internet connection right now."
-
-        Http.BadStatus response ->
-            response.status.message
-
-        Http.BadPayload message response ->
-            message
-
-
-
--- Mdl helper methods
-
-
-white : Options.Property c m
-white =
-    Color.text Color.white
-
-{--
-viewCard : Model -> Html Msg
-viewCard model = 
+questionCard : Model -> Question -> Html Msg
+questionCard model question =
     Card.view
-        [ css "height" "128px"
-        , css "width" "128px"
-        , Color.background (Color.color Color.Brown Color.S500)
-        -- Elevation
-        , if model.raised == k then Elevation.e8 else Elevation.e2
-        , Elevation.transition 250
-        , Options.onMouseEnter (Raise k)
-        , Options.onMouseLeave (Raise -1)
+        [ Elevation.e2
+        , Tooltip.attach Mdl [ question.id ]
+        , css "width" "600px"
+        , css "height" "192px"
         ]
-        [ Card.title [] [ Card.head [ white ] [ text "Hover here" ] ] ]
---}
+        [ Card.title
+            [ css "min-height" "10px"
+            , css "padding" "0"
+            , Options.css "align-items" "center"
+
+            -- Clear default padding to encompass scrim
+            , Color.background <| Color.color Color.Blue Color.S900
+            ]
+            [ Card.head
+                [ white
+                , Options.scrim 0.75
+                , css "padding" "16px"
+                , css "align-items" "center"
+
+                -- Restore default padding inside scrim
+                , css "width" "100%"
+                , Tooltip.attach Mdl [ question.id + 1 ]
+                ]
+                [ text (toString question.votesNumber) ]
+            ]
+        , Card.text []
+            [ text question.text ]
+        , Card.actions
+            [ Card.border ]
+            [ Button.render Mdl
+                [ 1, 0 ]
+                model.mdl
+                [ Button.ripple, Button.accent ]
+                --Add message to set expanded card here ]
+                [ text "Show Replies" ]
+            ]
+        , Card.menu []
+            [ Button.render Mdl
+                [ 0, 0 ]
+                model.mdl
+                [ Button.icon, Button.ripple, white, Tooltip.attach Mdl [ question.id + 1 ] ]
+                [ Icon.i "thumb_up" ]
+            , Tooltip.render Mdl
+                [ question.id + 1 ]
+                model.mdl
+                [ Tooltip.left
+                , Tooltip.large
+                ]
+                [ text "Press here to upvote this question" ]
+            , Button.render Mdl
+                [ 0, 0 ]
+                model.mdl
+                [ Button.icon, Button.ripple, white, Tooltip.attach Mdl [ question.id ] ]
+                [ Icon.i "message" ]
+            , Tooltip.render Mdl
+                [ question.id ]
+                model.mdl
+                [ Tooltip.left
+                , Tooltip.large
+                ]
+                [ text "This badge shows the amount of unread replies" ]
+            ]
+        ]

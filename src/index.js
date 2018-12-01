@@ -7,3 +7,15 @@ Elm.Main.init({
 });
 
 registerServiceWorker();
+
+const outboundPortHandlers = {
+  SetTitle: title => {
+    document.title = title;
+  }
+};
+
+const handleOutboundPort = evt => {
+  outboundPortHandlers[evt.type](evt.payload);
+};
+
+app.ports.outbound.subscribe(handleOutboundPort);

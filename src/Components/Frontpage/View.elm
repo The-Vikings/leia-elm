@@ -31,6 +31,7 @@ view model =
         , cell
             [ size All 4
             , size Tablet 8
+            , Options.css "padding" "32px 32px"
             , Options.css "align-items" "center"
             ]
             [ grid [ Grid.noSpacing ]
@@ -55,7 +56,7 @@ viewChatroomsOrError : Model -> Html Msg
 viewChatroomsOrError model =
     case model.allChatrooms of
         RemoteData.NotAsked ->
-            text ""
+            text "No Chatrooms are requested. Feen free to press F5 or Ctrl+R / Cmd+R"
 
         RemoteData.Loading ->
             h3 [] [ text "Loading..." ]
@@ -75,9 +76,8 @@ viewChatroomCards chatroom model =
 chatroomCard : Model -> Chatroom -> Html Msg
 chatroomCard model chatroom =
     Card.view
-        [ Elevation.e2
-        , Tooltip.attach Mdl [ chatroom.id ]
-        , css "width" "100%"
+        [ dynamic chatroom.id model
+        , css "width" "195px"
         ]
         [ Card.title
             [ css "min-height" "50px"
@@ -89,12 +89,20 @@ chatroomCard model chatroom =
             [ Card.head
                 [ white
                 , Options.scrim 0.75
-                , css "padding" "16px"
+                , css "padding" "16px 16px"
 
                 -- Restore default padding inside scrim
                 , css "width" "100%"
+                , Tooltip.attach Mdl [ chatroom.id ]
                 ]
                 [ text chatroom.name ]
+            , Tooltip.render Mdl
+                [ chatroom.id ]
+                model.mdl
+                [ Tooltip.bottom
+                , Tooltip.large
+                ]
+                [ text "This button will load the chatroom" ]
             ]
         , Card.text []
             [ text (toString chatroom.id) ]
@@ -106,10 +114,8 @@ chatroomCard model chatroom =
                 [ Button.ripple
                 , Button.accent
                 , Options.onClick (SendHttpRequestChatroomWithQuestions (toString chatroom.id))
-                , Tooltip.attach Mdl [ chatroom.id ]
                 ]
                 [ text "Show Chatroom" ]
-            
             ]
         ]
 

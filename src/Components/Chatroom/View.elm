@@ -46,7 +46,7 @@ viewQuestionsOrError : Model -> Html Msg
 viewQuestionsOrError model =
     case model.chatroom of
         RemoteData.NotAsked ->
-            text ""
+            h3 [] [ text "You are not currently in a chatroom. Go to the frontpage and enter one" ]
 
         RemoteData.Loading ->
             h3 [] [ text "Loading..." ]
@@ -62,16 +62,21 @@ viewQuestionCards : List Question -> Model -> Html Msg
 viewQuestionCards questions model =
     Html.table [] (List.map (questionCardOrExpandedCard model) questions)
 
+
 questionCardOrExpandedCard : Model -> Question -> Html Msg
-questionCardOrExpandedCard model question = 
-    case model.expandedQuestion of 
+questionCardOrExpandedCard model question =
+    case model.expandedQuestion of
         Just value ->
             if question.id == value then
-                questionCard model question -- Will be exchanged with the view function for when a card should be expanded with it's replies
-            else 
                 questionCard model question
-        Nothing -> 
+                -- Will be exchanged with the view function for when a card should be expanded with it's replies
+
+            else
+                questionCard model question
+
+        Nothing ->
             questionCard model question
+
 
 questionCard : Model -> Question -> Html Msg
 questionCard model question =
@@ -97,7 +102,7 @@ questionCard model question =
 
                 -- Restore default padding inside scrim
                 , css "width" "100%"
-                , Tooltip.attach Mdl [ (negate question.id) ]
+                , Tooltip.attach Mdl [ negate question.id ]
                 ]
                 [ text (toString question.votesNumber) ]
             ]
@@ -116,10 +121,10 @@ questionCard model question =
             [ Button.render Mdl
                 [ 0, 0 ]
                 model.mdl
-                [ Button.icon, Button.ripple, white, Tooltip.attach Mdl [ (negate question.id) ] ]
+                [ Button.icon, Button.ripple, white, Tooltip.attach Mdl [ negate question.id ] ]
                 [ Icon.i "thumb_up" ]
             , Tooltip.render Mdl
-                [ (negate question.id) ]
+                [ negate question.id ]
                 model.mdl
                 [ Tooltip.left
                 , Tooltip.large

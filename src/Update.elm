@@ -171,6 +171,14 @@ update msg model =
         Raise k ->
             { model | raised = k } ! []
 
+        ExpandQuestion maybeInt ->
+            case maybeInt of
+                Just int ->
+                    { model | expandedQuestion = Just int } ! []
+
+                _ ->
+                    { model | expandedQuestion = Nothing } ! []
+
 
 urlUpdate : Model -> ( Model, Cmd Msg )
 urlUpdate model =

@@ -13,6 +13,14 @@ Documentation of short term solutions(Will be resolved after EOSP):
 - The general message to fetch a chatroom from api will now alter "selectedTab". Consider abstracting to another function
 - Track this commit, coming in V8 which as of now is 85% complete, will enable both dynamic shadowing and tooltip at the same time without bug. https://github.com/debois/elm-mdl/pull/290
 - Make the "questionCardOrExpandedCard" cleaner by not having hte same action on two different branches in the case statement
+- Make a sub-model for messages in progress and nest their updates dispaching by passign in a  identifier to a general message, instead of specific messages for all three cases. For this, store the possible multiple replies in a list as tuples with an id
+- Research how to remove teh gradient from the colour of the cards title area 
+- Implemement usage of urlRouting with elm-mdl drawer
+- Tooltips aren't visible in padded area
+- Fetch image for header of drawer from our own backend instead of the web
+
+Elm-Mdl weaknesses: 
+- Floating label when textfield has value. Temporary solution and issue [here](https://github.com/debois/elm-mdl/issues/278)
 
 Deleting local docker volume(For instance needed if database changes has been made in the backend and there is no need for migration, due to empty database)
 This example will delete ALL local docker volumes, use with caution

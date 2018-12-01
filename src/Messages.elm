@@ -36,3 +36,4 @@ type Msg
     | SelectTab Int
     | Toggle (List Int)
     | Raise Int
+    | ExpandQuestion (Maybe Int)

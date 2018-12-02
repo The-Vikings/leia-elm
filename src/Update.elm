@@ -1,6 +1,9 @@
 module Update exposing (update, urlUpdate)
 
 import Components.Chatroom.Commands as ChatroomCommands
+import Components.Chatroom.Model exposing (Chatroom)
+import Components.Question.Decoder as QuestionDecoder
+import Components.Question.Model exposing (Question)
 import Contact.Update
 import ContactList.Update
 import Dict
@@ -122,17 +125,19 @@ update msg model =
 
         ReceiveMessage raw ->
             let
-                messageDecoder =
-                    JsDecode.field "message" JsDecode.string
+                questionDecoder =
+                    QuestionDecoder.questionDecoder
 
                 somePayload =
-                    JsDecode.decodeValue messageDecoder raw
+                    JsDecode.decodeValue questionDecoder raw
             in
             case somePayload of
                 Ok payload ->
-                    ( { model | messages = payload :: model.messages }
-                    , Cmd.none
-                    )
+                    let
+                        ( chatroom, cmd ) =
+                            RemoteData.update (updateChatroomQuestions payload) model.chatroom
+                    in
+                    ( { model | chatroom = chatroom }, cmd )
 
                 Err error ->
                     ( model, Cmd.none )
@@ -198,3 +203,8 @@ urlUpdate model =
 
         _ ->
             ( model, Cmd.none )
+
+
+updateChatroomQuestions : Question -> Chatroom -> ( Chatroom, Cmd msg )
+updateChatroomQuestions newQuestion chatroom =
+    ( { chatroom | questions = newQuestion :: chatroom.questions }, Cmd.none )

@@ -61,7 +61,7 @@ init location =
         ( initSocket, phxCmd ) =
             Phoenix.Socket.init "ws://localhost:80/socket/websocket"
                 |> Phoenix.Socket.withDebug
-                |> Phoenix.Socket.on "ping" "room:lobby" Messages.ReceiveMessage
+                |> Phoenix.Socket.on "newQuestion" "room:lobby" Messages.ReceiveMessage
                 |> Phoenix.Socket.join channel
 
         model =

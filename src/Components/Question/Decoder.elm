@@ -1,4 +1,4 @@
-module Components.Question.Decoder exposing (questionsDecoder)
+module Components.Question.Decoder exposing (questionDecoder, userAnswerDecoder, automaticAnswerDecoder)
 
 import Components.Question.Model exposing (AutomaticAnswer, Question, UserAnswer)
 import Components.Votes.Model exposing (Votes)
@@ -6,8 +6,8 @@ import Json.Decode as Decode exposing (Decoder, decodeString, field, int, list, 
 import Json.Decode.Pipeline exposing (decode, optional, required)
 
 
-questionsDecoder : Decoder Question
-questionsDecoder =
+questionDecoder : Decoder Question
+questionDecoder =
     decode Question
         |> optional "votes" (list votesDecoder) []
         |> required "user_id" int

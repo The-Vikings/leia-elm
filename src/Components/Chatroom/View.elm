@@ -3,7 +3,7 @@ module Components.Chatroom.View exposing (view)
 import Components.Question.Model exposing (Question, QuestionId, UserAnswer)
 import Components.Question.View exposing (view)
 import Html exposing (Html, div, h3, li, table, tbody, td, text, th, thead, tr, ul)
-import Html.Attributes
+import Html.Attributes exposing (style)
 import Material.Button as Button
 import Material.Card as Card
 import Material.Color as Color
@@ -82,67 +82,69 @@ questionCardOrExpandedCard model question =
 
 questionCard : Model -> Question -> Html Msg
 questionCard model question =
-    Card.view
-        [ Elevation.e2
-        , Tooltip.attach Mdl [ question.id ]
-        , css "width" "600px"
-        , css "height" "192px"
-        , css "padding-bottom" "16px"
-        ]
-        [ Card.title
-            [ css "min-height" "10px"
-            , css "padding" "0"
-            , Options.css "align-items" "center"
-            , css "background" "#FFFFFF"
+    Html.div [ style [( "padding", "20px 20px 20px 20px" )]]
+        [ Card.view
+            [ Elevation.e2
+            , Tooltip.attach Mdl [ question.id ]
+            , css "width" "600px"
+            , css "height" "192px"
+            , css "padding" "12px 12px 12px 12px"
             ]
-            [ Card.head
-                [ Color.text Color.black
-                , css "border-bottom" "2px solid grey"
-                , css "padding" "16px"
-                , css "align-items" "center"
-                , css "width" "100%"
-                , Tooltip.attach Mdl [ negate question.id ]
+            [ Card.title
+                [ css "min-height" "10px"
+                , css "padding" "0"
+                , Options.css "align-items" "center"
+                , css "background" "#FFFFFF"
                 ]
-                [ text (toString question.votesNumber) ]
-            ]
-        , Card.text
-            [ css "font-size" "22pt"
-            ]
-            [ text question.text ]
-        , Card.actions
-            [ Card.border, css "padding" "16px" ]
-            [ Button.render Mdl
-                [ 1, 0 ]
-                model.mdl
-                [ Button.ripple, Button.accent ]
-                --Add message to set expanded card here ]
-                [ text "Show Replies" ]
-            ]
-        , Card.menu []
-            [ Button.render Mdl
-                [ 0, 0 ]
-                model.mdl
-                [ Button.icon, Button.ripple, Color.text <| Color.color Color.Blue Color.S100, Tooltip.attach Mdl [ negate question.id ] ]
-                [ Icon.i "thumb_up" ]
-            , Tooltip.render Mdl
-                [ negate question.id ]
-                model.mdl
-                [ Tooltip.left
-                , Tooltip.large
+                [ Card.head
+                    [ Color.text Color.black
+                    , css "border-bottom" "2px solid grey"
+                    , css "padding" "16px"
+                    , css "align-items" "center"
+                    , css "width" "100%"
+                    , Tooltip.attach Mdl [ negate question.id ]
+                    ]
+                    [ text (toString question.votesNumber) ]
                 ]
-                [ text "Press here to upvote this question" ]
-            , Button.render Mdl
-                [ 0, 0 ]
-                model.mdl
-                [ Button.icon, Button.ripple, Color.text <| Color.color Color.Blue Color.S100, Tooltip.attach Mdl [ question.id ] ]
-                [ Icon.i "message" ]
-            , Tooltip.render Mdl
-                [ question.id ]
-                model.mdl
-                [ Tooltip.left
-                , Tooltip.large
+            , Card.text
+                [ css "font-size" "22pt"
                 ]
-                [ text "This badge shows the amount of unread replies" ]
+                [ text question.text ]
+            , Card.actions
+                [ Card.border, css "padding" "16px" ]
+                [ Button.render Mdl
+                    [ 1, 0 ]
+                    model.mdl
+                    [ Button.ripple, Button.accent ]
+                    --Add message to set expanded card here ]
+                    [ text "Show Replies" ]
+                ]
+            , Card.menu []
+                [ Button.render Mdl
+                    [ 0, 0 ]
+                    model.mdl
+                    [ Button.icon, Button.ripple, Color.text <| Color.color Color.Blue Color.S100, Tooltip.attach Mdl [ negate question.id ] ]
+                    [ Icon.i "thumb_up" ]
+                , Tooltip.render Mdl
+                    [ negate question.id ]
+                    model.mdl
+                    [ Tooltip.left
+                    , Tooltip.large
+                    ]
+                    [ text "Press here to upvote this question" ]
+                , Button.render Mdl
+                    [ 0, 0 ]
+                    model.mdl
+                    [ Button.icon, Button.ripple, Color.text <| Color.color Color.Blue Color.S100, Tooltip.attach Mdl [ question.id ] ]
+                    [ Icon.i "message" ]
+                , Tooltip.render Mdl
+                    [ question.id ]
+                    model.mdl
+                    [ Tooltip.left
+                    , Tooltip.large
+                    ]
+                    [ text "This badge shows the amount of unread replies" ]
+                ]
             ]
         ]
 

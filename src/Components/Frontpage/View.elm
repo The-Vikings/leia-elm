@@ -21,7 +21,7 @@ view model =
     grid [ Options.css "max-width" "1080px" ]
         [ cell
             [ size All 12
-            , Options.css "align-items" "left"
+            , Options.css "align-items" "center"
             , Options.css "padding" "32px 32px"
             , Options.css "display" "flex"
             , Options.css "flex-direction" "column"

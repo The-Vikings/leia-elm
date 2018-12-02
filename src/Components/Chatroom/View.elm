@@ -149,7 +149,7 @@ questionCard model question =
 questionInput : Model -> Html Msg
 questionInput model =
     Card.view
-        [ Elevation.e2 -- add dynamic
+        [ dynamic 1 model
         , css "width" "400px"
         , css "height" "120px"
         ]

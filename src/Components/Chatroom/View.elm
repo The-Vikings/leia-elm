@@ -69,7 +69,7 @@ questionCardOrExpandedCard model question =
     case model.expandedQuestion of
         Just value ->
             if question.id == value then
-                questionCard model question
+                answerToQuestionCard model question
                 -- Will be exchanged with the view function for when a card should be expanded with it's replies
 
             else
@@ -77,7 +77,7 @@ questionCardOrExpandedCard model question =
 
         --Card.border
         Nothing ->
-            answerToQuestionCard model question
+            questionCard model question
 
 
 questionCard : Model -> Question -> Html Msg
@@ -87,31 +87,30 @@ questionCard model question =
         , Tooltip.attach Mdl [ question.id ]
         , css "width" "600px"
         , css "height" "192px"
+        , css "padding-bottom" "16px"
         ]
         [ Card.title
             [ css "min-height" "10px"
             , css "padding" "0"
             , Options.css "align-items" "center"
-
-            -- Clear default padding to encompass scrim
-            , Color.background <| Color.color Color.Blue Color.S900
+            , css "background" "#FFFFFF"
             ]
             [ Card.head
-                [ white
-                , Options.scrim 0.75
+                [ Color.text Color.black
+                , css "border-bottom" "2px solid grey"
                 , css "padding" "16px"
                 , css "align-items" "center"
-
-                -- Restore default padding inside scrim
                 , css "width" "100%"
                 , Tooltip.attach Mdl [ negate question.id ]
                 ]
                 [ text (toString question.votesNumber) ]
             ]
-        , Card.text []
+        , Card.text
+            [ css "font-size" "22pt"
+            ]
             [ text question.text ]
         , Card.actions
-            [ Card.border ]
+            [ Card.border, css "padding" "16px" ]
             [ Button.render Mdl
                 [ 1, 0 ]
                 model.mdl
@@ -123,7 +122,7 @@ questionCard model question =
             [ Button.render Mdl
                 [ 0, 0 ]
                 model.mdl
-                [ Button.icon, Button.ripple, white, Tooltip.attach Mdl [ negate question.id ] ]
+                [ Button.icon, Button.ripple, Color.text <| Color.color Color.Blue Color.S100, Tooltip.attach Mdl [ negate question.id ] ]
                 [ Icon.i "thumb_up" ]
             , Tooltip.render Mdl
                 [ negate question.id ]
@@ -135,7 +134,7 @@ questionCard model question =
             , Button.render Mdl
                 [ 0, 0 ]
                 model.mdl
-                [ Button.icon, Button.ripple, white, Tooltip.attach Mdl [ question.id ] ]
+                [ Button.icon, Button.ripple, Color.text <| Color.color Color.Blue Color.S100, Tooltip.attach Mdl [ question.id ] ]
                 [ Icon.i "message" ]
             , Tooltip.render Mdl
                 [ question.id ]

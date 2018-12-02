@@ -82,16 +82,11 @@ chatroomCard model chatroom =
         [ Card.title
             [ css "min-height" "50px"
             , css "padding" "0"
-
-            -- Clear default padding to encompass scrim
-            , Color.background <| Color.color Color.Blue Color.S900
             ]
             [ Card.head
                 [ white
-                , Options.scrim 0.75
                 , css "padding" "16px 16px"
-
-                -- Restore default padding inside scrim
+                , css "background" "#02236A"
                 , css "width" "100%"
                 , Tooltip.attach Mdl [ chatroom.id ]
                 ]
@@ -129,14 +124,13 @@ chatroomIdInput model =
         [ Card.title
             [ css "min-height" "60px"
             , css "padding" "0"
-            , Options.css "align-items" "center"
+            , css "align-items" "center"
+            , css "background" "#02236A"
 
             -- Clear default padding to encompass scrim
-            , Color.background <| Color.color Color.Blue Color.S900
             ]
             [ Card.head
                 [ white
-                , Options.scrim 0.75
                 , css "padding" "16px 16px"
                 , css "align-items" "center"
 
@@ -144,7 +138,7 @@ chatroomIdInput model =
                 , css "width" "100%"
                 , Tooltip.attach Mdl [ 0 ]
                 ]
-                [ text "Enter a chatroom based on it's ID" ]
+                [ text "Enter a chatroom based on its ID" ]
             , Tooltip.render Mdl
                 [ 0 ]
                 model.mdl

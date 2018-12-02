@@ -29,10 +29,11 @@ view model =
             , Options.css "display" "flex !important"
             , Options.css "flex-direction" "row"
             , Options.css "align-items" "center"
+            , Options.css "background" "#02236A"
             ]
             { header = [ h1 [ style [ ( "padding", "0rem" ) ] ] [] ]
             , drawer = [ drawerHeader model, viewDrawer model ]
-            , tabs = ( [ text "All chatrooms", text "Current Chatroom" ], [ Color.background (Color.color Color.Blue Color.S800) ] )
+            , tabs = ( [ text "All chatrooms", text "Current Chatroom" ], [ Options.css "background" "#02236A" ] )
             , main =
                 [ viewBody model
                 ]

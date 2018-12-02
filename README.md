@@ -19,9 +19,14 @@ Documentation of short term solutions(Will be resolved after EOSP):
 - Tooltips aren't visible in padded area
 - Fetch image for header of drawer from our own backend instead of the web
 - Pressing "enter" should send the question/reply
-- User studies shows that the tooltips sometimes cover for functionality, and that the y are found only when a button is dicovered. Would make more sense to attach them only to the entire card itself and not eagerly rendered, but after e.g. 1.5 sec
 - List of questions is reverted now. Add functionality to sort on certain criterias
-- Listen on multiple sockets, and a message on each socket should send its own message, handled by the controller
+- Listen on multiple sockets, and a message on each socket should send its own message, handled by the controller  
+- Endre vekk fra bruk av Material.Scheme.TopWithScheme
+
+Preferred design changes: 
+- User studies shows that the tooltips sometimes cover for functionality, and that the y are found only when a button is dicovered. Would make more sense to attach them only to the entire card itself and not eagerly rendered, but after e.g. 1.5 sec
+- Outline on like-button to show that it is a button
+- Dynamic text size changes based on string length
 
 Elm-Mdl weaknesses: 
 - Floating label when textfield has value. Temporary solution and issue [here](https://github.com/debois/elm-mdl/issues/278)

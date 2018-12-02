@@ -1,6 +1,6 @@
 module Components.Chatroom.View exposing (view)
 
-import Components.Question.Model exposing (Question, QuestionId)
+import Components.Question.Model exposing (Question, QuestionId, UserAnswer)
 import Components.Question.View exposing (view)
 import Html exposing (Html, div, h3, li, table, tbody, td, text, th, thead, tr, ul)
 import Html.Attributes
@@ -77,7 +77,7 @@ questionCardOrExpandedCard model question =
 
         --Card.border
         Nothing ->
-            questionCard model question
+            answerToQuestionCard model question
 
 
 questionCard : Model -> Question -> Html Msg
@@ -185,8 +185,8 @@ questionInput model =
 --individual answer cards
 
 
-answerCards : Model -> Html Msg
-answerCards model =
+answerCards : Model -> UserAnswer -> Html Msg
+answerCards model userAnswer =
     Card.view
         [ css "width" "500px"
         , css "height" "192px"
@@ -276,8 +276,8 @@ answerToQuestionCard model question =
                 ]
             ]
         , Html.tfoot []
-            [ --Html.table [] (List.map answerCards model)
-              Html.tr []
+            [ Html.table [] (List.map (answerCards model) question.userAnswers)
+            , Html.tr []
                 [ Card.view
                     [ dynamic 1 model
                     , css "width" "500px"

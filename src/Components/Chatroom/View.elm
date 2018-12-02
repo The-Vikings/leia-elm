@@ -3,6 +3,7 @@ module Components.Chatroom.View exposing (view)
 import Components.Question.Model exposing (Question, QuestionId)
 import Components.Question.View exposing (view)
 import Html exposing (Html, div, h3, li, table, tbody, td, text, th, thead, tr, ul)
+import Html.Attributes
 import Material.Button as Button
 import Material.Card as Card
 import Material.Color as Color
@@ -74,6 +75,7 @@ questionCardOrExpandedCard model question =
             else
                 questionCard model question
 
+        --Card.border
         Nothing ->
             questionCard model question
 
@@ -175,5 +177,138 @@ questionInput model =
                 , Options.onClick SendQuestion
                 ]
                 [ text "Send question" ]
+            ]
+        ]
+
+
+
+--individual answer cards
+
+
+answerCards : Model -> Html Msg
+answerCards model =
+    Card.view
+        [ css "width" "500px"
+        , css "height" "192px"
+        , css "margin-left" "auto"
+        , css "margin-right" "auto"
+        ]
+        [ Card.text
+            [ css "width" "600px"
+            , css "height" "192px"
+            , css "display" "flex"
+            , css "flex-direction" "column"
+            , css "position" "relative"
+            , css "justify-content" "flex-start"
+            , Options.css "align-items" "flex-start"
+            , Color.background <| Color.color Color.Grey Color.S50
+            ]
+            [ text "sample text" ]
+        ]
+
+
+answerToQuestionCard : Model -> Question -> Html Msg
+answerToQuestionCard model question =
+    Html.table
+        []
+        [ Card.view
+            [ Elevation.e2
+            , Tooltip.attach Mdl [ question.id ]
+            , css "width" "600px"
+            , css "height" "192px"
+            ]
+            [ Card.title
+                [ css "min-height" "10px"
+                , css "padding" "0"
+                , Options.css "align-items" "center"
+
+                -- Clear default padding to encompass scrim
+                --, Color.background <| Color.color Color.Indigo Color.S900
+                , css "background" "#1E18C3"
+                ]
+                [ Card.head
+                    [ white
+                    , css "padding" "16px"
+                    , css "align-items" "center"
+
+                    -- Restore default padding inside scrim
+                    , css "width" "100%"
+                    , Tooltip.attach Mdl [ negate question.id ]
+                    ]
+                    [ text (toString question.votesNumber) ]
+                ]
+            , Card.text []
+                [ text question.text ]
+            , Card.actions
+                [ Card.border ]
+                [ Button.render Mdl
+                    [ 1, 0 ]
+                    model.mdl
+                    [ Button.ripple, Button.accent ]
+                    --Add message to set expanded card here ]
+                    [ text "Show Replies" ]
+                ]
+            , Card.menu []
+                [ Button.render Mdl
+                    [ 0, 0 ]
+                    model.mdl
+                    [ Button.icon, Button.ripple, white, Tooltip.attach Mdl [ negate question.id ] ]
+                    [ Icon.i "thumb_up" ]
+                , Tooltip.render Mdl
+                    [ negate question.id ]
+                    model.mdl
+                    [ Tooltip.left
+                    , Tooltip.large
+                    ]
+                    [ text "Press here to upvote this question" ]
+                , Button.render Mdl
+                    [ 0, 0 ]
+                    model.mdl
+                    [ Button.icon, Button.ripple, white, Tooltip.attach Mdl [ question.id ] ]
+                    [ Icon.i "message" ]
+                , Tooltip.render Mdl
+                    [ question.id ]
+                    model.mdl
+                    [ Tooltip.left
+                    , Tooltip.large
+                    ]
+                    [ text "This badge shows the amount of unread replies" ]
+                ]
+            ]
+        , Html.tfoot []
+            [ --Html.table [] (List.map answerCards model)
+              Html.tr []
+                [ Card.view
+                    [ dynamic 1 model
+                    , css "width" "500px"
+                    , css "height" "150px"
+                    , css "margin-left" "auto"
+                    , css "margin-right" "auto"
+                    ]
+                    [ Card.text [ css "padding" "16px" ]
+                        [ Textfield.render Mdl
+                            [ 1 ]
+                            model.mdl
+                            [ Textfield.label "Write your answer"
+                            , Textfield.floatingLabel
+                            , Textfield.text_
+                            , Options.onInput SetQuestionTextInput
+                            , Textfield.value model.questionInProgress
+                            ]
+                            []
+                        ]
+                    , Card.actions
+                        []
+                        [ Button.render Mdl
+                            [ 1, 0 ]
+                            model.mdl
+                            [ Button.ripple
+                            , Button.accent
+                            , Options.onClick SendQuestion
+                            ]
+                            [ text "Send answer" ]
+                        ]
+                    ]
+                ]
             ]
         ]

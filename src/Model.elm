@@ -28,6 +28,7 @@ type RemoteData error value
 type alias Model =
     { mdl : Material.Model
     , snackbar : Snackbar.Model (Maybe Msg)
+    , notificationsEnabled : Bool
     , contact : RemoteData String Contact
     , contactList : RemoteData String ContactList
     , route : Routing.Route
@@ -74,6 +75,7 @@ init location =
             , messages = [ "Test message", "test message 2" ]
             , mdl = Material.model
             , snackbar = Snackbar.model
+            , notificationsEnabled = True
             , contact = NotRequested
             , contactList = NotRequested
             , route = location |> Routing.parse

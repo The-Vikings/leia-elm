@@ -105,7 +105,7 @@ update msg model =
                 payload =
                     JsEncode.object
                         [ ( "body", JsEncode.string model.replyInProgress )
-                        , ( "question_id", JsEncode.string (toString questionId) )
+                        , ( "question_id", JsEncode.int questionId )
                         ]
 
                 phxPush =
@@ -247,7 +247,8 @@ urlUpdate model =
 updateChatroomQuestions : Question -> Chatroom -> ( Chatroom, Cmd msg )
 updateChatroomQuestions newQuestion chatroom =
     let
-        questions = List.append chatroom.questions ( List.singleton newQuestion )
+        questions =
+            List.append chatroom.questions (List.singleton newQuestion)
     in
     ( { chatroom | questions = questions }, Cmd.none )
 
@@ -282,4 +283,3 @@ updateChatroomAutomaticAnswer newAutomaticAnswer chatroom =
             List.map updateAutomaticAnswer chatroom.questions
     in
     ( { chatroom | questions = questions }, Cmd.none )
-    

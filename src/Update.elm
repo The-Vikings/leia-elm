@@ -3,7 +3,7 @@ module Update exposing (update, urlUpdate)
 import Components.Chatroom.Commands as ChatroomCommands
 import Components.Chatroom.Model exposing (Chatroom)
 import Components.Question.Decoder as QuestionDecoder
-import Components.Question.Model exposing (Question)
+import Components.Question.Model exposing (AutomaticAnswer, Question, UserAnswer)
 import Contact.Update
 import ContactList.Update
 import Dict
@@ -87,7 +87,7 @@ update msg model =
                 phxPush =
                     Phoenix.Push.init "newQuestion" "room:lobby"
                         |> Phoenix.Push.withPayload payload
-                        |> Phoenix.Push.onOk ReceiveMessage
+                        |> Phoenix.Push.onOk ReceiveQuestion
                         |> Phoenix.Push.onError HandleSendError
 
                 ( phxSocket, phxCmd ) =
@@ -100,17 +100,18 @@ update msg model =
             , Cmd.map PhoenixMsg phxCmd
             )
 
-        SendReply ->
+        SendReply questionId ->
             let
                 payload =
                     JsEncode.object
                         [ ( "body", JsEncode.string model.replyInProgress )
+                        , ( "question_id", JsEncode.string (toString questionId) )
                         ]
 
                 phxPush =
                     Phoenix.Push.init "newReply" "room:lobby"
                         |> Phoenix.Push.withPayload payload
-                        |> Phoenix.Push.onOk ReceiveMessage
+                        |> Phoenix.Push.onOk ReceiveUserAnswer
                         |> Phoenix.Push.onError HandleSendError
 
                 ( phxSocket, phxCmd ) =
@@ -123,7 +124,7 @@ update msg model =
             , Cmd.map PhoenixMsg phxCmd
             )
 
-        ReceiveMessage raw ->
+        ReceiveQuestion raw ->
             let
                 questionDecoder =
                     QuestionDecoder.questionDecoder
@@ -136,6 +137,44 @@ update msg model =
                     let
                         ( chatroom, cmd ) =
                             RemoteData.update (updateChatroomQuestions payload) model.chatroom
+                    in
+                    ( { model | chatroom = chatroom }, cmd )
+
+                Err error ->
+                    ( model, Cmd.none )
+
+        ReceiveUserAnswer raw ->
+            let
+                userAnswerDecoder =
+                    QuestionDecoder.userAnswerDecoder
+
+                somePayload =
+                    JsDecode.decodeValue userAnswerDecoder raw
+            in
+            case somePayload of
+                Ok payload ->
+                    let
+                        ( chatroom, cmd ) =
+                            RemoteData.update (updateChatroomUserAnswer payload) model.chatroom
+                    in
+                    ( { model | chatroom = chatroom }, cmd )
+
+                Err error ->
+                    ( model, Cmd.none )
+
+        ReceiveAutomaticAnswer raw ->
+            let
+                automaticAnswerDecoder =
+                    QuestionDecoder.automaticAnswerDecoder
+
+                somePayload =
+                    JsDecode.decodeValue automaticAnswerDecoder raw
+            in
+            case somePayload of
+                Ok payload ->
+                    let
+                        ( chatroom, cmd ) =
+                            RemoteData.update (updateChatroomAutomaticAnswer payload) model.chatroom
                     in
                     ( { model | chatroom = chatroom }, cmd )
 
@@ -207,4 +246,40 @@ urlUpdate model =
 
 updateChatroomQuestions : Question -> Chatroom -> ( Chatroom, Cmd msg )
 updateChatroomQuestions newQuestion chatroom =
-    ( { chatroom | questions = newQuestion :: chatroom.questions }, Cmd.none )
+    let
+        questions = List.append chatroom.questions ( List.singleton newQuestion )
+    in
+    ( { chatroom | questions = questions }, Cmd.none )
+
+
+updateChatroomUserAnswer : UserAnswer -> Chatroom -> ( Chatroom, Cmd msg )
+updateChatroomUserAnswer newUserAnswer chatroom =
+    let
+        updateUserAnswer question =
+            if question.id == newUserAnswer.question_id then
+                { question | userAnswers = newUserAnswer :: question.userAnswers }
+
+            else
+                question
+
+        questions =
+            List.map updateUserAnswer chatroom.questions
+    in
+    ( { chatroom | questions = questions }, Cmd.none )
+
+
+updateChatroomAutomaticAnswer : AutomaticAnswer -> Chatroom -> ( Chatroom, Cmd msg )
+updateChatroomAutomaticAnswer newAutomaticAnswer chatroom =
+    let
+        updateAutomaticAnswer question =
+            if question.id == newAutomaticAnswer.question_id then
+                { question | automaticAnswers = newAutomaticAnswer :: question.automaticAnswers }
+
+            else
+                question
+
+        questions =
+            List.map updateAutomaticAnswer chatroom.questions
+    in
+    ( { chatroom | questions = questions }, Cmd.none )
+    

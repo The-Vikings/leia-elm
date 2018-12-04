@@ -61,7 +61,7 @@ viewQuestionsOrError model =
 
 viewQuestionCards : List Question -> Model -> Html Msg
 viewQuestionCards questions model =
-    Html.table [ ] (List.map (questionCardOrExpandedCard model) (List.reverse questions))
+    Html.table [] (List.map (questionCardOrExpandedCard model) (List.reverse questions))
 
 
 questionCardOrExpandedCard : Model -> Question -> Html Msg
@@ -77,12 +77,12 @@ questionCardOrExpandedCard model question =
 
         --Card.border
         Nothing ->
-            questionCard model question
+            answerToQuestionCard model question
 
 
 questionCard : Model -> Question -> Html Msg
 questionCard model question =
-    Html.div [ style [( "padding", "20px 20px 20px 20px" )]]
+    Html.div [ style [ ( "padding", "20px 20px 20px 20px" ) ] ]
         [ Card.view
             [ Elevation.e2
             , Tooltip.attach Mdl [ question.id ]
@@ -188,23 +188,22 @@ questionInput model =
 
 answerCards : Model -> UserAnswer -> Html Msg
 answerCards model userAnswer =
-    Card.view
-        [ css "width" "500px"
-        , css "height" "192px"
-        , css "margin-left" "auto"
-        , css "margin-right" "auto"
-        ]
-        [ Card.text
-            [ css "width" "600px"
-            , css "height" "192px"
-            , css "display" "flex"
-            , css "flex-direction" "column"
-            , css "position" "relative"
-            , css "justify-content" "flex-start"
-            , Options.css "align-items" "flex-start"
-            , Color.background <| Color.color Color.Grey Color.S50
+    Html.div [ style [ ( "padding", "5px 5px 5px 5px" ) ] ]
+        [ Card.view
+            [ css "width" "500px"
+            , css "height" "50px"
+            , css "margin-left" "auto"
+            , css "margin-right" "auto"
+            , css "background" "#FFFFFF"
+
+            --  , Options.css "align-items" "center"
             ]
-            [ text "sample text" ]
+            [ Card.text
+                [ Options.css "align-items" "center"
+                , css "font-size" "14pt"
+                ]
+                [ text userAnswer.text ]
+            ]
         ]
 
 
@@ -217,43 +216,43 @@ answerToQuestionCard model question =
             , Tooltip.attach Mdl [ question.id ]
             , css "width" "600px"
             , css "height" "192px"
+            , css "padding" "12px 12px 12px 12px"
             ]
             [ Card.title
                 [ css "min-height" "10px"
                 , css "padding" "0"
                 , Options.css "align-items" "center"
-
-                -- Clear default padding to encompass scrim
-                --, Color.background <| Color.color Color.Indigo Color.S900
-                , css "background" "#1E18C3"
+                , css "background" "#FFFFFF"
                 ]
                 [ Card.head
-                    [ white
+                    [ Color.text Color.black
+
+                    --, css "border-bottom" "2px solid grey"
                     , css "padding" "16px"
                     , css "align-items" "center"
-
-                    -- Restore default padding inside scrim
                     , css "width" "100%"
                     , Tooltip.attach Mdl [ negate question.id ]
                     ]
                     [ text (toString question.votesNumber) ]
                 ]
-            , Card.text []
+            , Card.text
+                [ css "font-size" "22pt"
+                ]
                 [ text question.text ]
             , Card.actions
-                [ Card.border ]
+                [ Card.border, css "padding" "16px" ]
                 [ Button.render Mdl
                     [ 1, 0 ]
                     model.mdl
                     [ Button.ripple, Button.accent ]
                     --Add message to set expanded card here ]
-                    [ text "Show Replies" ]
+                    [ text "Hide Replies" ]
                 ]
             , Card.menu []
                 [ Button.render Mdl
                     [ 0, 0 ]
                     model.mdl
-                    [ Button.icon, Button.ripple, white, Tooltip.attach Mdl [ negate question.id ] ]
+                    [ Button.icon, Button.ripple, Color.text <| Color.color Color.Blue Color.S100, Tooltip.attach Mdl [ negate question.id ] ]
                     [ Icon.i "thumb_up" ]
                 , Tooltip.render Mdl
                     [ negate question.id ]
@@ -265,7 +264,7 @@ answerToQuestionCard model question =
                 , Button.render Mdl
                     [ 0, 0 ]
                     model.mdl
-                    [ Button.icon, Button.ripple, white, Tooltip.attach Mdl [ question.id ] ]
+                    [ Button.icon, Button.ripple, Color.text <| Color.color Color.Blue Color.S100, Tooltip.attach Mdl [ question.id ] ]
                     [ Icon.i "message" ]
                 , Tooltip.render Mdl
                     [ question.id ]
@@ -277,24 +276,24 @@ answerToQuestionCard model question =
                 ]
             ]
         , Html.tfoot []
-            [ Html.table [] (List.map (answerCards model) question.userAnswers)
+            [ Html.table [ style [ ( "margin-left", "auto" ), ( "margin-right", "auto" ) ] ] (List.map (answerCards model) question.userAnswers)
             , Html.tr []
                 [ Card.view
                     [ dynamic 1 model
                     , css "width" "500px"
-                    , css "height" "150px"
+                    , css "height" "120px"
                     , css "margin-left" "auto"
                     , css "margin-right" "auto"
                     ]
-                    [ Card.text [ css "padding" "16px" ]
+                    [ Card.text [ css "padding" "10px" ]
                         [ Textfield.render Mdl
-                            [ 1 ]
+                            [ 2 ]
                             model.mdl
                             [ Textfield.label "Write your answer"
                             , Textfield.floatingLabel
                             , Textfield.text_
-                            , Options.onInput SetQuestionTextInput
-                            , Textfield.value model.questionInProgress
+                            , Options.onInput SetReplyTextInput
+                            , Textfield.value model.replyInProgress
                             ]
                             []
                         ]
@@ -305,7 +304,7 @@ answerToQuestionCard model question =
                             model.mdl
                             [ Button.ripple
                             , Button.accent
-                            , Options.onClick SendQuestion
+                            , Options.onClick SendReply
                             ]
                             [ text "Send answer" ]
                         ]

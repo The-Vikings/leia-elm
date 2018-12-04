@@ -77,7 +77,7 @@ questionCardOrExpandedCard model question =
 
         --Card.border
         Nothing ->
-            answerToQuestionCard model question
+            questionCard model question
 
 
 questionCard : Model -> Question -> Html Msg
@@ -115,7 +115,7 @@ questionCard model question =
                 [ Button.render Mdl
                     [ 1, 0 ]
                     model.mdl
-                    [ Button.ripple, Button.accent ]
+                    [ Button.ripple, Button.accent, Options.onClick (ExpandQuestion (Just question.id)) ]
                     --Add message to set expanded card here ]
                     [ text "Show Replies" ]
                 ]
@@ -226,8 +226,7 @@ answerToQuestionCard model question =
                 ]
                 [ Card.head
                     [ Color.text Color.black
-
-                    --, css "border-bottom" "2px solid grey"
+                    , css "border-bottom" "2px solid grey"
                     , css "padding" "16px"
                     , css "align-items" "center"
                     , css "width" "100%"
@@ -244,7 +243,7 @@ answerToQuestionCard model question =
                 [ Button.render Mdl
                     [ 1, 0 ]
                     model.mdl
-                    [ Button.ripple, Button.accent ]
+                    [ Button.ripple, Button.accent, Options.onClick (ExpandQuestion Nothing) ]
                     --Add message to set expanded card here ]
                     [ text "Hide Replies" ]
                 ]
@@ -300,7 +299,7 @@ answerToQuestionCard model question =
                     , Card.actions
                         []
                         [ Button.render Mdl
-                            [ 1, 0 ]
+                            [ 2, 0 ]
                             model.mdl
                             [ Button.ripple
                             , Button.accent

@@ -25,8 +25,10 @@ type Msg
     | SetQuestionTextInput String
     | SetReplyTextInput String
     | SendQuestion
-    | SendReply
-    | ReceiveMessage JsEncode.Value
+    | SendReply Int
+    | ReceiveQuestion JsEncode.Value
+    | ReceiveUserAnswer JsEncode.Value
+    | ReceiveAutomaticAnswer JsEncode.Value
     | HandleSendError JsEncode.Value
     | OnLocationChange Navigation.Location
     | FetchChatroomWithQuestions (WebData Chatroom)

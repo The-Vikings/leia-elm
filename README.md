@@ -21,7 +21,9 @@ Documentation of short term solutions(Will be resolved after EOSP):
 - Pressing "enter" should send the question/reply
 - List of questions is reverted now. Add functionality to sort on certain criterias
 - Listen on multiple sockets, and a message on each socket should send its own message, handled by the controller  
-- Endre vekk fra bruk av Material.Scheme.TopWithScheme
+- Change to not use Material.Scheme.TopWithScheme, see its documentation
+- Move snackbar functionality into it's own model
+- Setup environment variables for dev-locally vs production env
 
 Preferred design changes: 
 - User studies shows that the tooltips sometimes cover for functionality, and that the y are found only when a button is dicovered. Would make more sense to attach them only to the entire card itself and not eagerly rendered, but after e.g. 1.5 sec

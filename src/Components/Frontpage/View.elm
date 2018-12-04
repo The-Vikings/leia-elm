@@ -2,10 +2,9 @@ module Components.Frontpage.View exposing (view)
 
 import Components.Chatroom.Model exposing (Chatroom)
 import Html exposing (Html, h3, text)
+import Html.Attributes exposing (style)
 import Material.Button as Button
 import Material.Card as Card
-import Material.Color as Color
-import Material.Elevation as Elevation
 import Material.Grid as Grid exposing (Device(..), cell, grid, size)
 import Material.Options as Options exposing (cs, css, when)
 import Material.Textfield as Textfield
@@ -75,42 +74,44 @@ viewChatroomCards chatroom model =
 
 chatroomCard : Model -> Chatroom -> Html Msg
 chatroomCard model chatroom =
-    Card.view
-        [ dynamic chatroom.id model
-        , css "width" "195px"
-        ]
-        [ Card.title
-            [ css "min-height" "50px"
-            , css "padding" "0"
+    Html.div [ style [ ( "padding", "20px 20px 20px 20px" ) ] ]
+        [ Card.view
+            [ dynamic chatroom.id model
+            , css "width" "195px"
             ]
-            [ Card.head
-                [ white
-                , css "padding" "16px 16px"
-                , css "background" "#02236A"
-                , css "width" "100%"
-                , Tooltip.attach Mdl [ chatroom.id ]
+            [ Card.title
+                [ css "min-height" "50px"
+                , css "padding" "0"
                 ]
-                [ text chatroom.name ]
-            , Tooltip.render Mdl
-                [ chatroom.id ]
-                model.mdl
-                [ Tooltip.bottom
-                , Tooltip.large
+                [ Card.head
+                    [ white
+                    , css "padding" "16px 16px"
+                    , css "background" "#02236A"
+                    , css "width" "100%"
+                    , Tooltip.attach Mdl [ chatroom.id ]
+                    ]
+                    [ text chatroom.name ]
+                , Tooltip.render Mdl
+                    [ chatroom.id ]
+                    model.mdl
+                    [ Tooltip.bottom
+                    , Tooltip.large
+                    ]
+                    [ text "This button will load the chatroom" ]
                 ]
-                [ text "This button will load the chatroom" ]
-            ]
-        , Card.text []
-            [ text (toString chatroom.id) ]
-        , Card.actions
-            [ Card.border ]
-            [ Button.render Mdl
-                [ 1, 0 ]
-                model.mdl
-                [ Button.ripple
-                , Button.accent
-                , Options.onClick (SendHttpRequestChatroomWithQuestions (toString chatroom.id))
+            , Card.text []
+                [ text (toString chatroom.id) ]
+            , Card.actions
+                [ Card.border ]
+                [ Button.render Mdl
+                    [ 1, 0 ]
+                    model.mdl
+                    [ Button.ripple
+                    , Button.accent
+                    , Options.onClick (SendHttpRequestChatroomWithQuestions (toString chatroom.id))
+                    ]
+                    [ text "Show Chatroom" ]
                 ]
-                [ text "Show Chatroom" ]
             ]
         ]
 

@@ -304,7 +304,7 @@ answerToQuestionCard model question =
                             model.mdl
                             [ Button.ripple
                             , Button.accent
-                            , Options.onClick SendReply
+                            , Options.onClick (SendReply question.id)
                             ]
                             [ text "Send answer" ]
                         ]

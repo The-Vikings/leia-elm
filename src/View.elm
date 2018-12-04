@@ -5,6 +5,7 @@ import Components.Frontpage.View
 import Components.PhoenixTest.View
 import Html exposing (Html, div, h1, header, section, text)
 import Html.Attributes exposing (class, href, style)
+import Material.Button as Button
 import Material.Color as Color
 import Material.Dialog as Dialog
 import Material.Icon as Icon
@@ -31,13 +32,49 @@ view model =
             , Options.css "align-items" "center"
             , Options.css "background" "#02236A"
             ]
-            { header = [ h1 [ style [ ( "padding", "0rem" ) ] ] [] ]
+            { header =
+                [ h1 [ style [ ( "padding", "0rem" ), ( "height", "40px" ), ( "margin-left", "auto" ), ( "margin-top", "auto" ) ] ]
+                    [ if model.notificationsEnabled == True then
+                        notificationOn model
+
+                      else
+                        notificationOff model
+                    ]
+                ]
             , drawer = [ drawerHeader model, viewDrawer model ]
             , tabs = ( [ text "All chatrooms", text "Current Chatroom" ], [ Options.css "background" "#02236A" ] )
             , main =
                 [ viewBody model
                 ]
             }
+
+
+notificationOn : Model -> Html Msg
+notificationOn model =
+    Button.render Mdl
+        [ 5, 0 ]
+        model.mdl
+        [ Button.ripple
+        , Button.accent
+        , Button.icon
+        , Color.text <| Color.color Color.Amber Color.S800
+        , Options.css "margin-right" "40px"
+        ]
+        [ Icon.i "notifications" ]
+
+
+notificationOff : Model -> Html Msg
+notificationOff model =
+    Button.render Mdl
+        [ 5, 0 ]
+        model.mdl
+        [ Button.ripple
+        , Button.accent
+        , Button.icon
+        , Color.text <| Color.color Color.Amber Color.S800
+        , Options.css "margin-right" "40px"
+        ]
+        [ Icon.i "notifications_off" ]
 
 
 viewBody : Model -> Html Msg

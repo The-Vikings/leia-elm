@@ -1,7 +1,6 @@
 module Components.Chatroom.View exposing (view)
 
 import Components.Question.Model exposing (Question, QuestionId, UserAnswer)
-import Components.Question.View exposing (view)
 import Html exposing (Html, div, h3, li, table, tbody, td, text, th, thead, tr, ul)
 import Html.Attributes exposing (style)
 import Material.Button as Button
@@ -9,8 +8,9 @@ import Material.Card as Card
 import Material.Color as Color
 import Material.Elevation as Elevation
 import Material.Grid as Grid exposing (Device(..), cell, grid, size)
+import Material.Helpers exposing (cssTransitionStep, delay, map1st, map2nd, pure)
 import Material.Icon as Icon
-import Material.Options as Options exposing (cs, css, when)
+import Material.Options as Options exposing (Style, cs, css, nop, when)
 import Material.Textfield as Textfield
 import Material.Tooltip as Tooltip
 import Messages exposing (Msg(..))
@@ -121,7 +121,7 @@ questionCard model question =
                 ]
             , Card.menu []
                 [ Button.render Mdl
-                    [ 0, 0 ]
+                    [ negate question.id ]
                     model.mdl
                     [ Button.icon, Button.ripple, Color.text <| Color.color Color.Blue Color.S100, Tooltip.attach Mdl [ negate question.id ] ]
                     [ Icon.i "thumb_up" ]
@@ -133,7 +133,7 @@ questionCard model question =
                     ]
                     [ text "Press here to upvote this question" ]
                 , Button.render Mdl
-                    [ 0, 0 ]
+                    [ question.id ]
                     model.mdl
                     [ Button.icon, Button.ripple, Color.text <| Color.color Color.Blue Color.S100, Tooltip.attach Mdl [ question.id ] ]
                     [ Icon.i "message" ]
@@ -249,7 +249,7 @@ answerToQuestionCard model question =
                 ]
             , Card.menu []
                 [ Button.render Mdl
-                    [ 0, 0 ]
+                    [ negate question.id ]
                     model.mdl
                     [ Button.icon, Button.ripple, Color.text <| Color.color Color.Blue Color.S100, Tooltip.attach Mdl [ negate question.id ] ]
                     [ Icon.i "thumb_up" ]
@@ -261,7 +261,7 @@ answerToQuestionCard model question =
                     ]
                     [ text "Press here to upvote this question" ]
                 , Button.render Mdl
-                    [ 0, 0 ]
+                    [ question.id ]
                     model.mdl
                     [ Button.icon, Button.ripple, Color.text <| Color.color Color.Blue Color.S100, Tooltip.attach Mdl [ question.id ] ]
                     [ Icon.i "message" ]

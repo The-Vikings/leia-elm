@@ -1,4 +1,4 @@
-module Model exposing (ChatMessagePayload, Model, RemoteData(..), init)
+module Model exposing (ChatMessagePayload, Model, RemoteData(..), Square_(..), init, Square)
 
 import Components.Chatroom.Commands exposing (fetchAllChatrooms, fetchChatroomWithQuestions)
 import Components.Chatroom.Model exposing (Chatroom)
@@ -25,10 +25,25 @@ type RemoteData error value
     | Success value
 
 
+type Square_
+    = Appearing
+    | Growing
+    | Waiting
+    | Active
+    | Idle
+    | Disappearing
+
+
+type alias Square =
+    ( Int, Square_ )
+
+
 type alias Model =
     { mdl : Material.Model
-    , snackbar : Snackbar.Model (Maybe Msg)
     , notificationsEnabled : Bool
+    , snackbar : Snackbar.Model Int
+    , snackbarCount : Int
+    , snackbarSquares : List Square
     , contact : RemoteData String Contact
     , contactList : RemoteData String ContactList
     , route : Routing.Route
@@ -76,6 +91,8 @@ init location =
             , mdl = Material.model
             , snackbar = Snackbar.model
             , notificationsEnabled = True
+            , snackbarCount = 0
+            , snackbarSquares = []
             , contact = NotRequested
             , contactList = NotRequested
             , route = location |> Routing.parse

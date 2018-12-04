@@ -11,6 +11,7 @@ import Material.Grid as Grid exposing (Device(..), cell, grid, size)
 import Material.Helpers exposing (cssTransitionStep, delay, map1st, map2nd, pure)
 import Material.Icon as Icon
 import Material.Options as Options exposing (Style, cs, css, nop, when)
+import Material.Snackbar as Snackbar
 import Material.Textfield as Textfield
 import Material.Tooltip as Tooltip
 import Messages exposing (Msg(..))
@@ -29,7 +30,8 @@ view model =
             , Options.css "display" "flex"
             , Options.css "flex-direction" "column"
             ]
-            [ questionInput model
+            [ Snackbar.view model.snackbar |> Html.map Snackbar
+            , questionInput model
             ]
         , cell
             [ size All 12

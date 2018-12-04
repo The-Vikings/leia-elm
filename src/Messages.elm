@@ -15,7 +15,11 @@ import Routing exposing (Route)
 
 type Msg
     = Mdl (Material.Msg Msg)
-    | Snackbar (Snackbar.Msg (Maybe Msg))
+    | Snackbar (Snackbar.Msg Int)
+    | AddToast String
+    | Appear Int
+    | Grown Int 
+    | Gone Int 
     | ContactMsg ContactMsg
     | ContactListMsg ContactListMsg
     | NavigateTo Route

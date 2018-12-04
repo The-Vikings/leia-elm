@@ -89,6 +89,8 @@ questionCard model question =
             , css "width" "600px"
             , css "height" "192px"
             , css "padding" "12px 12px 12px 12px"
+            , css "margin-left" "auto"
+            , css "margin-right" "auto"
             ]
             [ Card.title
                 [ css "min-height" "10px"
@@ -191,7 +193,7 @@ answerCards model userAnswer =
     Html.div [ style [ ( "padding", "5px 5px 5px 5px" ) ] ]
         [ Card.view
             [ css "width" "500px"
-            , css "height" "50px"
+            , css "min-height" "50px"
             , css "margin-left" "auto"
             , css "margin-right" "auto"
             , css "background" "#FFFFFF"
@@ -201,6 +203,7 @@ answerCards model userAnswer =
             [ Card.text
                 [ Options.css "align-items" "center"
                 , css "font-size" "14pt"
+                , css "word-break" "break-all"
                 ]
                 [ text userAnswer.text ]
             ]
@@ -210,13 +213,15 @@ answerCards model userAnswer =
 answerToQuestionCard : Model -> Question -> Html Msg
 answerToQuestionCard model question =
     Html.table
-        []
+        [ style [ ( "margin-left", "auto" ), ( "margin-right", "auto" ) ] ]
         [ Card.view
             [ Elevation.e2
             , Tooltip.attach Mdl [ question.id ]
             , css "width" "600px"
             , css "height" "192px"
             , css "padding" "12px 12px 12px 12px"
+            , css "margin-left" "auto"
+            , css "margin-right" "auto"
             ]
             [ Card.title
                 [ css "min-height" "10px"

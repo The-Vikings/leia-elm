@@ -73,8 +73,17 @@ p (for patch)
 * (choose all the files)
 ```
 
-Devops and dockerization
+Websockets
+We are using websockets to communicate with the backend after the initial fetch. The setup follows [this guide](http://jeremybellows.com/blog/Creating-a-Chatroom-Using-Phoenix-Elm-And-Websockets)
 
+Elm-format  
+We use Elm-format, a package simialr to "pretteir", following a standard to automatically format your code. For atom it's a standalone package, in VSCode it's a part of the elm-language package. You might want to increase the time limit for "format on save"
+
+Elm-Mdl  
+The view uses a css-library: elm-mdl. This is a ported version of the mdl-lite made by google, now for elm
+
+
+Devops and dockerization  
 Dockerization of the environment was important for us, both to learn more about docker and also to avoid version errors on different systems
 The use of brunch as our build tool was chosen as it had sufficient documentation of being used with phoenix and elm. In the brunch config, this line adds the directories being watched by the brunch watchers: 
 ```

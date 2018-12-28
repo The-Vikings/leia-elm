@@ -58,6 +58,19 @@ You are very welcome with any [feedback](https://github.com/halfzebra/create-elm
 
 Feel free to join [@create-elm-app](https://elmlang.slack.com/messages/CBBET0YMR/) channel at Slack.
 
+## Prerequisites
+
+requires yarn version >8
+```sh
+yarn global add create-elm-app
+```
+
+Follow installation instructions here for Yarn & NPM
+https://www.npmjs.com/package/create-elm-app
+
+Linux users might want to install npm with nvm(Node Version Manager) to avoid permission problems instead of installing create-elm-app with sudo
+https://docs.npmjs.com/getting-started/fixing-npm-permissions
+
 ## Installing Elm packages
 
 ```sh
